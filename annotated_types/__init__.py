@@ -1,11 +1,19 @@
 from dataclasses import dataclass
 from datetime import timezone
-from typing import Any, Callable, Protocol, Union
+from typing import Any, Callable, Union
 
 try:
     from types import EllipsisType
 except ImportError:
     EllipsisType = type(Ellipsis)
+
+try:
+    from typing import Protocol
+except ImportError:
+    try:
+        from typing_extensions import Protocol
+    except ImportError:
+        Protocol = object
 
 __all__ = (
     'Gt',

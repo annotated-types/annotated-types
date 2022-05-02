@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "annoated-types"
 version = "0.2.0"
-description = "Metadata types to be used with PEP 593 annotations (typing.Annotated)"
+description = "Reusable constraint types to use with typing.Annotated"
 authors = [
     "Samuel Colvin <s@mulecolvin.com>",
     "Adrian Garcia Badaracco <1755071+adriangb@users.noreply.github.com>",
@@ -12,12 +12,8 @@ repository = "https://github.com/annotated-types/annotated-types"
 license = "MIT"
 classifiers = [
     "Development Status :: 4 - Beta",
-    "Framework :: Pytest",
     "Intended Audience :: Developers",
-    "Intended Audience :: Education",
     "Intended Audience :: Information Technology",
-    "Intended Audience :: Science/Research",
-    "Intended Audience :: System Administrators",
     "Operating System :: Unix",
     "Operating System :: POSIX :: Linux",
     "Environment :: Console",
@@ -29,12 +25,12 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: Internet",
     "Typing :: Typed",
 ]
 
 [tool.poetry.dependencies]
 python = "^3.7.0"
+typing-extensions = "^4.0.0"
 
 [build-system]
 requires = ["poetry-core"]

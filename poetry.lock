@@ -1,8 +1,18 @@
-package = []
+[[package]]
+name = "typing-extensions"
+version = "4.2.0"
+description = "Backported and Experimental Type Hints for Python 3.7+"
+category = "main"
+optional = false
+python-versions = ">=3.7"
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.0"
-content-hash = "014672718ad1f1549692363a116bfc669cbafbc73478c722004d4175de3b7179"
+content-hash = "e103fcb4f759a0185a89fa41037bd20782ed7dc0bc37b1ab0ef93c4c3bbd8e18"
 
 [metadata.files]
+typing-extensions = [
+    {file = "typing_extensions-4.2.0-py3-none-any.whl", hash = "sha256:6657594ee297170d19f67d55c05852a874e7eb634f4f753dbd667855e07c1708"},
+    {file = "typing_extensions-4.2.0.tar.gz", hash = "sha256:f1c24655a0da0d1b67f07e17a5e6b2a105894e6824b92096378bb3668ef02376"},
+]

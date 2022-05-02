@@ -5,7 +5,7 @@
 [![versions](https://img.shields.io/pypi/pyversions/annotated-types.svg)](https://github.com/annotated-types/annotated-types)
 [![license](https://img.shields.io/github/license/annotated-types/annotated-types.svg)](https://github.com/annotated-types/annotated-types/blob/main/LICENSE)
 
-TODO.
+Reusable constraint types to use with `typing.Annotated`.
 
 ## Install
 
