@@ -1,4 +1,11 @@
-from typing import Annotated, Any, Callable, Dict, Iterator, Type, get_args, get_origin
+import sys
+from typing import Any, Callable, Dict, Iterator, Type, get_args, get_origin
+
+if sys.version_info < (3, 9):
+    from typing_extensions import Annotated
+else:
+    from typing import Annotated
+
 import pytest
 
 import annotated_types
