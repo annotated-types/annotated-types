@@ -50,7 +50,7 @@ def cases() -> Iterable[Case]:
     yield Case(Annotated[float, at.Lt(0.5)], (0.4, 0.0, -0.1), (0.5, 0.6, 0.7, 0.8, 0.9))
     yield Case(
         Annotated[datetime, at.Lt(datetime(2000, 1, 1))],
-        [datetime(2000, 1, 1), datetime(1999, 12, 31)],
+        [datetime(1999, 12, 31), datetime(1999, 12, 31)],
         [datetime(2000, 1, 2), datetime(2000, 1, 3)],
     )
 
@@ -62,7 +62,7 @@ def cases() -> Iterable[Case]:
         [datetime(2000, 1, 2), datetime(2000, 1, 3)],
     )
 
-    yield Case(Annotated[int, at.Interval(gt=4)], (5, 6, 1000, 4), (4, 0, -1))
+    yield Case(Annotated[int, at.Interval(gt=4)], (5, 6, 1000), (4, 0, -1))
     yield Case(Annotated[int, at.Interval(gt=4, lt=10)], (5, 6), (4, 10, 1000, 0, -1))
     yield Case(Annotated[float, at.Interval(ge=0.5, le=1)], (0.5, 0.9, 1), (0.49, 1.1))
     yield Case(
