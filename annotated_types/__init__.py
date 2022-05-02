@@ -38,9 +38,9 @@ class ConstraintType(ABC):
 
 
 if sys.version_info >= (3, 8):
-    from annotated_types._compat38 import SupportsDiv, SupportsGe, SupportsGt, SupportsLe, SupportsLt, SupportsMod
+    from ._compat38 import SupportsDiv, SupportsGe, SupportsGt, SupportsLe, SupportsLt, SupportsMod
 else:
-    from annotated_types._compat37 import SupportsDiv, SupportsGe, SupportsGt, SupportsLe, SupportsLt, SupportsMod
+    from ._compat37 import SupportsDiv, SupportsGe, SupportsGt, SupportsLe, SupportsLt, SupportsMod
 
 
 @dataclass
