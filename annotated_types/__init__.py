@@ -1,19 +1,18 @@
+import sys
+from abc import ABC
 from dataclasses import dataclass
 from datetime import timezone
-from typing import Any, Callable, Union
+from typing import Any, Callable, Iterator, Union
+
+if sys.version_info < (3, 8):
+    from typing_extensions import Protocol
+else:
+    from typing import Protocol
 
 try:
     from types import EllipsisType
 except ImportError:
-    EllipsisType = type(Ellipsis)
-
-try:
-    from typing import Protocol
-except ImportError:
-    try:
-        from typing_extensions import Protocol
-    except ImportError:
-        Protocol = object
+    EllipsisType = type(Ellipsis)  # type: ignore[misc]
 
 __all__ = (
     'Gt',
@@ -31,18 +30,22 @@ __all__ = (
 )
 
 
+class ConstraintType(ABC):
+    pass
+
+
 class SupportsGt(Protocol):
     def __gt__(self, other: Any) -> bool:
         ...
 
 
-class SupportsLt(Protocol):
-    def __lt__(self, other: Any) -> bool:
+class SupportsGe(Protocol):
+    def __ge__(self, other: Any) -> bool:
         ...
 
 
-class SupportsGe(Protocol):
-    def __ge__(self, other: Any) -> bool:
+class SupportsLt(Protocol):
+    def __lt__(self, other: Any) -> bool:
         ...
 
 
@@ -52,23 +55,23 @@ class SupportsLe(Protocol):
 
 
 @dataclass
-class Gt:
-    bound: SupportsGt
+class Gt(ConstraintType):
+    gt: SupportsGt
 
 
 @dataclass
-class Ge:
-    bound: SupportsGe
+class Ge(ConstraintType):
+    ge: SupportsGe
 
 
 @dataclass
 class Lt:
-    bound: SupportsLt
+    lt: SupportsLt
 
 
 @dataclass
 class Le:
-    bound: SupportsLe
+    le: SupportsLe
 
 
 @dataclass
@@ -78,7 +81,7 @@ class Interval:
     lt: Union[SupportsLt, None] = None
     le: Union[SupportsLe, None] = None
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[Any]:
         if self.gt is not None:
             yield Gt(self.gt)
         if self.ge is not None:
@@ -101,7 +104,7 @@ class SupportsDiv(Protocol):
 
 @dataclass
 class MultipleOf:
-    multiple: Union[SupportsMod, SupportsDiv]
+    multiple_of: Union[SupportsMod, SupportsDiv]
 
 
 @dataclass
@@ -123,3 +126,4 @@ class Predicate:
 IsLower = Predicate(str.islower)
 IsUpper = Predicate(str.isupper)
 IsDigit = Predicate(str.isdigit)
+IsAscii = Predicate(str.isascii)
