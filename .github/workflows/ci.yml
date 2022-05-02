@@ -61,16 +61,19 @@ jobs:
       with:
         python-version: '3.10'
 
-    - uses: actions/cache@v2
+    - uses: actions/cache@v3
       id: cache
       with:
-        path: ${{ env.pythonLocation }}
-        key: ${{ hashFiles('tests/requirements-linting.txt') }}
+        path: |
+          ${{ env.pythonLocation }}
+          .mypy_cache
+        key: v2-${{ hashFiles('tests/requirements-linting.txt') }}
 
     - run: pip install -r tests/requirements-linting.txt
       if: steps.cache.outputs.cache-hit != 'true'
 
     - run: make lint
+    - run: make mypy
 
   deploy:
     needs:

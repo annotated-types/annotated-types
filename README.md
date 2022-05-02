@@ -12,3 +12,16 @@ Reusable constraint types to use with `typing.Annotated`.
 ```bash
 pip install annotated-types
 ```
+
+
+example:
+
+```python
+from typing import Annotated, List
+from annotated_types import Gt, Len
+
+class MyClass:
+    foobar: Annotated[int, Gt(4)]
+    my_list: Annotated[List[int], 0:10]
+    my_list_also: Annotated[List[int], Len(0, 10)]
+```

@@ -5,7 +5,7 @@ from datetime import timezone
 from typing import Any, Callable, Iterator, Optional, TypeVar, Union
 
 if sys.version_info < (3, 10):
-    EllipsisType = type(Ellipsis)  # type: ignore[misc]
+    EllipsisType = type(Ellipsis)
 else:
     from types import EllipsisType
 
@@ -94,13 +94,13 @@ class Len(ConstraintType):
 
 @dataclass
 class Regex(ConstraintType):
-    regex_pattern: str
+    regex_pattern: str | bytes
     regex_flags: int = 0
 
 
 @dataclass
 class Timezone(ConstraintType):
-    tz: Union[str, timezone, EllipsisType, None] = ...
+    tz: Union[str, timezone, EllipsisType, None]
 
 
 @dataclass
