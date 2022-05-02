@@ -4,10 +4,6 @@ from dataclasses import dataclass
 from datetime import timezone
 from typing import Any, Callable, Iterator, Optional, TypeVar, Union
 
-if sys.version_info < (3, 8):
-    from typing_extensions import Protocol
-else:
-    from typing import Protocol
 
 if sys.version_info < (3, 10):
     EllipsisType = type(Ellipsis)  # type: ignore[misc]
@@ -35,28 +31,17 @@ __all__ = (
 __version__ = '0.2.0'
 
 
+T = TypeVar('T')
+
+
 class ConstraintType(ABC):
     pass
 
 
-class SupportsGt(Protocol):
-    def __gt__(self, other: Any) -> bool:
-        ...
-
-
-class SupportsGe(Protocol):
-    def __ge__(self, other: Any) -> bool:
-        ...
-
-
-class SupportsLt(Protocol):
-    def __lt__(self, other: Any) -> bool:
-        ...
-
-
-class SupportsLe(Protocol):
-    def __le__(self, other: Any) -> bool:
-        ...
+if sys.version_info >= (3, 8):
+    from annotated_types._compat38 import SupportsDiv, SupportsGe, SupportsGt, SupportsLe, SupportsLt, SupportsMod
+else:
+    from annotated_types._compat37 import SupportsDiv, SupportsGe, SupportsGt, SupportsLe, SupportsLt, SupportsMod
 
 
 @dataclass
@@ -97,22 +82,9 @@ class Interval(ConstraintType):
             yield Le(self.le)
 
 
-T = TypeVar('T')
-
-
-class SupportsMod(Protocol):
-    def __mod__(self: T, other: Any) -> T:
-        ...
-
-
-class SupportsDiv(Protocol):
-    def __div__(self: T, other: Any) -> T:
-        ...
-
-
 @dataclass
 class MultipleOf(ConstraintType):
-    multiple_of: SupportsMod
+    multiple_of: Union[SupportsDiv, SupportsMod]
 
 
 @dataclass
