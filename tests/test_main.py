@@ -95,7 +95,7 @@ VALIDATORS: Dict[Type[Constraint], Validator] = {
     annotated_types.Predicate: check_predicate,
     annotated_types.Len: check_len,
     annotated_types.Timezone: check_timezone,
-    re.Pattern: check_regex,
+    re.Pattern: check_regex,  # type: ignore
     slice: check_len,
 }
 
