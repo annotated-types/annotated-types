@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 import annotated_types
 from annotated_types.test_cases import Case, cases
 
-Constraint = Union[annotated_types.ConstraintType, slice, re.Pattern[bytes], re.Pattern[str]]
+Constraint = Union[annotated_types.ConstraintType, slice, "re.Pattern[bytes]", "re.Pattern[str]"]
 
 
 def check_gt(constraint: Constraint, val: Any) -> bool:
@@ -48,7 +48,7 @@ def check_regex(constraint: Constraint, val: Any) -> bool:
     assert isinstance(constraint, (annotated_types.Regex, re.Pattern))
     if isinstance(constraint, annotated_types.Regex):
         return re.fullmatch(constraint.regex_pattern, val, flags=constraint.regex_flags) is not None
-    return constraint.fullmatch(val) is not None  # type: ignore[arg-type]
+    return constraint.fullmatch(val) is not None
 
 
 def check_len(constraint: Constraint, val: Any) -> bool:
