@@ -46,6 +46,7 @@ filterwarnings = "error"
 
 [tool.coverage.run]
 source = ["annotated_types"]
+omit = ["annotated_types/_compat37.py", "annotated_types/_compat38.py"]
 branch = true
 
 [tool.coverage.report]
