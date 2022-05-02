@@ -1,7 +1,7 @@
 import re
 from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal
-from typing import Any, Iterable, List, NamedTuple
+from typing import Any, Dict, Iterable, List, NamedTuple, Set, Tuple
 
 from typing_extensions import Annotated
 
@@ -93,10 +93,20 @@ def cases() -> Iterable[Case]:
     yield Case(Annotated[str, at.Len(3, 5)], ('123', '1234'), ('', '1', '12', '12345', 'x' * 10))
     yield Case(Annotated[str, 3:5], ('123', '1234'), ('', '1', '12', '12345', 'x' * 10))
 
+    yield Case(Annotated[Dict[int, int], at.Len(2, 4)], ({1: 1, 2: 2}), ({}, {1: 1}, {1: 1, 2: 2, 3: 3, 4: 4}))
+    yield Case(Annotated[Set[int], at.Len(2, 4)], ({1, 2}, {1, 2, 3}), (set(), {1}, {1, 2, 3, 4}))
+    yield Case(Annotated[Tuple[int, ...], at.Len(2, 4)], ((1, 2), (1, 2, 3)), ((), (1,), (1, 2, 3, 4)))
+
     # Regex
 
     yield Case(Annotated[str, at.Regex('...')], ('abc', '123'), ('12', '1234'))
+    yield Case(Annotated[str, re.compile('...')], ('abc', '123'), ('12', '1234'))
+    yield Case(Annotated[str, at.Regex(b'...')], (b'abc', b'123'), (b'12', b'1234'))
+    yield Case(Annotated[str, re.compile(b'...')], (b'abc', b'123'), (b'12', b'1234'))
     yield Case(Annotated[str, at.Regex('abc', re.I)], ('abc', 'ABC'), ('123', 'wrong'))
+    yield Case(Annotated[str, re.compile('abc', flags=re.I)], ('abc', 'ABC'), ('123', 'wrong'))
+    yield Case(Annotated[str, at.Regex(b'abc', re.I)], (b'abc', b'ABC'), (b'123', 'wrong'))
+    yield Case(Annotated[str, re.compile(b'abc', flags=re.I)], (b'abc', b'ABC'), (b'123', b'wrong'))
 
     # Timezone
 
@@ -124,4 +134,4 @@ def cases() -> Iterable[Case]:
     yield Case(Annotated[str, at.IsDigit], ['', '123'], ['ab', 'a1b2'])
     yield Case(Annotated[str, at.IsAscii], ['123', 'foo bar'], ['£100', '😊', 'whatever 👀'])
 
-    yield Case(Annotated[str, at.Predicate(lambda x: x % 2 == 0)], [0, 2, 4], [1, 3, 5])
+    yield Case(Annotated[int, at.Predicate(lambda x: x % 2 == 0)], [0, 2, 4], [1, 3, 5])
