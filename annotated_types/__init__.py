@@ -80,7 +80,7 @@ class Le(ConstraintType):
 
 
 @dataclass
-class Interval:
+class Interval(ConstraintType):
     gt: Union[SupportsGt, None] = None
     ge: Union[SupportsGe, None] = None
     lt: Union[SupportsLt, None] = None
@@ -111,29 +111,29 @@ class SupportsDiv(Protocol):
 
 
 @dataclass
-class MultipleOf:
+class MultipleOf(ConstraintType):
     multiple_of: SupportsMod
 
 
 @dataclass
-class Len:
+class Len(ConstraintType):
     min_inclusive: int = 0
     max_exclusive: Optional[int] = None
 
 
 @dataclass
-class Regex:
+class Regex(ConstraintType):
     regex_pattern: str
     regex_flags: int = 0
 
 
 @dataclass
-class Timezone:
+class Timezone(ConstraintType):
     tz: Union[str, timezone, EllipsisType, None] = ...
 
 
 @dataclass
-class Predicate:
+class Predicate(ConstraintType):
     func: Callable[[Any], bool]
 
 
