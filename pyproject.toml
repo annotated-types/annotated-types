@@ -1,8 +1,12 @@
 [tool.poetry]
 name = "annoated-types"
 version = "0.2.0"
-description = "..."
-authors = ["Samuel Colvin", "Adrian Bqabaracco", "Zac Hatfield-Dodds"]
+description = "Metadata types to be used with PEP 593 annotations (typing.Annotated)"
+authors = [
+    "Samuel Colvin <s@mulecolvin.com>",
+    "Adrian Garcia Badaracco <1755071+adriangb@users.noreply.github.com>",
+    "Zac Hatfield-Dodds <zac@zhd.dev>",
+]
 readme = "README.md"
 repository = "https://github.com/annotated-types/annotated-types"
 license = "MIT"
