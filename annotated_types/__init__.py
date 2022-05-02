@@ -2,7 +2,7 @@ import sys
 from abc import ABC
 from dataclasses import dataclass
 from datetime import timezone
-from typing import Any, Callable, Iterator, Optional, Union
+from typing import Any, Callable, Iterator, Optional, TypeVar, Union
 
 if sys.version_info < (3, 8):
     from typing_extensions import Protocol
@@ -23,6 +23,7 @@ __all__ = (
     'Interval',
     'MultipleOf',
     'Len',
+    'Regex',
     'Timezone',
     'Predicate',
     'IsLower',
@@ -96,25 +97,34 @@ class Interval:
             yield Le(self.le)
 
 
+T = TypeVar('T')
+
+
 class SupportsMod(Protocol):
-    def __mod__(self, other: Any) -> bool:
+    def __mod__(self: T, other: Any) -> T:
         ...
 
 
 class SupportsDiv(Protocol):
-    def __div__(self, other: Any) -> bool:
+    def __div__(self: T, other: Any) -> T:
         ...
 
 
 @dataclass
 class MultipleOf:
-    multiple_of: Union[SupportsMod, SupportsDiv]
+    multiple_of: SupportsMod
 
 
 @dataclass
 class Len:
     min_inclusive: int = 0
     max_exclusive: Optional[int] = None
+
+
+@dataclass
+class Regex:
+    regex_pattern: str
+    regex_flags: int = 0
 
 
 @dataclass
