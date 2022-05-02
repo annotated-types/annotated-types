@@ -5,7 +5,7 @@ from datetime import timezone
 from typing import Any, Callable, Iterator, Optional, TypeVar, Union
 
 if sys.version_info < (3, 10):
-    EllipsisType = type(Ellipsis)  # type: ignore[misc]
+    EllipsisType = type(Ellipsis)
 else:
     from types import EllipsisType
 

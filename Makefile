@@ -29,12 +29,12 @@ testcov: test
 	@coverage report --show-missing
 	@coverage html
 
-.PHONY: docs
-docs:
-	mkdocs build --strict
+.PHONY: mypy
+mypy:
+	mypy annotated_types
 
 .PHONY: all
-all: lint testcov docs
+all: lint mypy testcov
 
 .PHONY: clean
 clean:
