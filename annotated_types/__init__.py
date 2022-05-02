@@ -9,10 +9,11 @@ if sys.version_info < (3, 8):
 else:
     from typing import Protocol
 
-try:
-    from types import EllipsisType
-except ImportError:
+if sys.version_info < (3, 10):
     EllipsisType = type(Ellipsis)  # type: ignore[misc]
+else:
+    from types import EllipsisType
+
 
 __all__ = (
     'Gt',
@@ -68,12 +69,12 @@ class Ge(ConstraintType):
 
 
 @dataclass
-class Lt:
+class Lt(ConstraintType):
     lt: SupportsLt
 
 
 @dataclass
-class Le:
+class Le(ConstraintType):
     le: SupportsLe
 
 
@@ -84,7 +85,7 @@ class Interval:
     lt: Union[SupportsLt, None] = None
     le: Union[SupportsLe, None] = None
 
-    def __iter__(self) -> Iterator[Any]:
+    def __iter__(self) -> Iterator[ConstraintType]:
         if self.gt is not None:
             yield Gt(self.gt)
         if self.ge is not None:
