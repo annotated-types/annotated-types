@@ -94,7 +94,7 @@ class Len(ConstraintType):
 
 @dataclass
 class Regex(ConstraintType):
-    regex_pattern: str | bytes
+    regex_pattern: Union[str, bytes]
     regex_flags: int = 0
 
 
