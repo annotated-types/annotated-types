@@ -49,7 +49,6 @@ VALIDATORS: Dict[Type[annotated_types.ConstraintType], Validator] = {
 }
 
 
-
 def get_constraints(tp: type) -> Iterator[annotated_types.ConstraintType]:
     origin = get_origin(tp)
     assert origin is Annotated
