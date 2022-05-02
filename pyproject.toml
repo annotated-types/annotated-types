@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "annoated-types"
+name = "annotated-types"
 # version is set from annotated-types/__init__.py::__version__
 version = "0"
 description = "Reusable constraint types to use with typing.Annotated"
