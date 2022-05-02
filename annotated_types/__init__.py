@@ -94,13 +94,13 @@ class Len(ConstraintType):
 
 @dataclass
 class Regex(ConstraintType):
-    regex_pattern: str
+    regex_pattern: str | bytes
     regex_flags: int = 0
 
 
 @dataclass
 class Timezone(ConstraintType):
-    tz: Union[str, timezone, EllipsisType, None] = ...
+    tz: Union[str, timezone, EllipsisType, None]
 
 
 @dataclass
