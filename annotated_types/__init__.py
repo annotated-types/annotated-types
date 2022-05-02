@@ -1,6 +1,11 @@
 from dataclasses import dataclass
 from datetime import timezone
-from typing import Any, Callable, Protocol
+from typing import Any, Callable, Protocol, Union
+
+try:
+    from types import EllipsisType
+except ImportError:
+    EllipsisType = type(Ellipsis)
 
 __all__ = (
     'Gt',
@@ -60,10 +65,10 @@ class Le:
 
 @dataclass
 class Interval:
-    gt: SupportsGt | None = None
-    ge: SupportsGe | None = None
-    lt: SupportsLt | None = None
-    le: SupportsLe | None = None
+    gt: Union[SupportsGt, None] = None
+    ge: Union[SupportsGe, None] = None
+    lt: Union[SupportsLt, None] = None
+    le: Union[SupportsLe, None] = None
 
     def __iter__(self):
         if self.gt is not None:
@@ -88,18 +93,18 @@ class SupportsDiv(Protocol):
 
 @dataclass
 class MultipleOf:
-    multiple: SupportsMod | SupportsDiv
+    multiple: Union[SupportsMod, SupportsDiv]
 
 
 @dataclass
 class Len:
     min_inclusive: int = 0
-    max_exclusive: int | None = None
+    max_exclusive: Union[int, None] = None
 
 
 @dataclass
 class Timezone:
-    tz: str | timezone | Ellipsis | None = ...
+    tz: Union[str, timezone, EllipsisType, None] = ...
 
 
 @dataclass
