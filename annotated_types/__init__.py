@@ -2,7 +2,7 @@ import sys
 from abc import ABC
 from dataclasses import dataclass
 from datetime import timezone
-from typing import Any, Callable, Iterator, Union
+from typing import Any, Callable, Iterator, Optional, Union
 
 if sys.version_info < (3, 8):
     from typing_extensions import Protocol
@@ -114,7 +114,7 @@ class MultipleOf:
 @dataclass
 class Len:
     min_inclusive: int = 0
-    max_exclusive: Union[int, None] = None
+    max_exclusive: Optional[int] = None
 
 
 @dataclass
