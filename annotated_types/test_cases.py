@@ -1,9 +1,13 @@
 import re
+import sys
 from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal
 from typing import Any, Dict, Iterable, List, NamedTuple, Set, Tuple
 
-from typing_extensions import Annotated
+if sys.version_info < (3, 9):
+    from typing_extensions import Annotated
+else:
+    from typing import Annotated
 
 import annotated_types as at
 
