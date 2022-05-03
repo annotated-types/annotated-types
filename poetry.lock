@@ -9,7 +9,7 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7.0"
-content-hash = "e103fcb4f759a0185a89fa41037bd20782ed7dc0bc37b1ab0ef93c4c3bbd8e18"
+content-hash = "7b3c605fa2fef1f6176d5f035988ee374bc2da2d11563eafc9f79f3923f3de31"
 
 [metadata.files]
 typing-extensions = [
