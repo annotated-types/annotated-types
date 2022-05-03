@@ -42,6 +42,11 @@ __version__ = '0.2.0'
 T = TypeVar('T')
 
 
+# arguments that start with __ are considered
+# positional only
+# see https://peps.python.org/pep-0484/#positional-only-arguments
+
+
 class SupportsGt(Protocol):
     def __gt__(self: T, __other: T) -> bool:
         ...
