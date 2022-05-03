@@ -1,5 +1,4 @@
 import sys
-from abc import ABC
 from dataclasses import dataclass
 from datetime import timezone
 from typing import Any, Callable, Iterator, Optional, TypeVar, Union
@@ -38,7 +37,7 @@ __version__ = '0.2.0'
 T = TypeVar('T')
 
 
-class ConstraintType(ABC):
+class BaseMetadata:
     pass
 
 
@@ -49,33 +48,33 @@ else:
 
 
 @dataclass(frozen=True)
-class Gt(ConstraintType):
+class Gt(BaseMetadata):
     gt: SupportsGt
 
 
 @dataclass(frozen=True)
-class Ge(ConstraintType):
+class Ge(BaseMetadata):
     ge: SupportsGe
 
 
 @dataclass(frozen=True)
-class Lt(ConstraintType):
+class Lt(BaseMetadata):
     lt: SupportsLt
 
 
 @dataclass(frozen=True)
-class Le(ConstraintType):
+class Le(BaseMetadata):
     le: SupportsLe
 
 
 @dataclass(frozen=True)
-class Interval(ConstraintType):
+class Interval(BaseMetadata):
     gt: Union[SupportsGt, None] = None
     ge: Union[SupportsGe, None] = None
     lt: Union[SupportsLt, None] = None
     le: Union[SupportsLe, None] = None
 
-    def __iter__(self) -> Iterator[ConstraintType]:
+    def __iter__(self) -> Iterator[BaseMetadata]:
         if self.gt is not None:
             yield Gt(self.gt)
         if self.ge is not None:
@@ -87,29 +86,29 @@ class Interval(ConstraintType):
 
 
 @dataclass(frozen=True)
-class MultipleOf(ConstraintType):
+class MultipleOf(BaseMetadata):
     multiple_of: Union[SupportsDiv, SupportsMod]
 
 
 @dataclass(frozen=True)
-class Len(ConstraintType):
+class Len(BaseMetadata):
     min_inclusive: Annotated[int, Ge(0)] = 0
     max_exclusive: Optional[Annotated[int, Ge(0)]] = None
 
 
 @dataclass(frozen=True)
-class Regex(ConstraintType):
+class Regex(BaseMetadata):
     regex_pattern: Union[str, bytes]
     regex_flags: int = 0
 
 
 @dataclass(frozen=True)
-class Timezone(ConstraintType):
+class Timezone(BaseMetadata):
     tz: Union[str, timezone, EllipsisType, None]
 
 
 @dataclass(frozen=True)
-class Predicate(ConstraintType):
+class Predicate(BaseMetadata):
     func: Callable[[Any], bool]
 
 
