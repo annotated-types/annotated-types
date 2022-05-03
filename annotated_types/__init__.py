@@ -4,6 +4,11 @@ from dataclasses import dataclass
 from datetime import timezone
 from typing import Any, Callable, Iterator, Optional, TypeVar, Union
 
+if sys.version_info < (3, 9):
+    from typing_extensions import Annotated
+else:
+    from typing import Annotated
+
 if sys.version_info < (3, 10):
     EllipsisType = type(Ellipsis)
 else:
@@ -43,27 +48,27 @@ else:
     from ._compat37 import SupportsDiv, SupportsGe, SupportsGt, SupportsLe, SupportsLt, SupportsMod
 
 
-@dataclass
+@dataclass(frozen=True)
 class Gt(ConstraintType):
     gt: SupportsGt
 
 
-@dataclass
+@dataclass(frozen=True)
 class Ge(ConstraintType):
     ge: SupportsGe
 
 
-@dataclass
+@dataclass(frozen=True)
 class Lt(ConstraintType):
     lt: SupportsLt
 
 
-@dataclass
+@dataclass(frozen=True)
 class Le(ConstraintType):
     le: SupportsLe
 
 
-@dataclass
+@dataclass(frozen=True)
 class Interval(ConstraintType):
     gt: Union[SupportsGt, None] = None
     ge: Union[SupportsGe, None] = None
@@ -81,29 +86,29 @@ class Interval(ConstraintType):
             yield Le(self.le)
 
 
-@dataclass
+@dataclass(frozen=True)
 class MultipleOf(ConstraintType):
     multiple_of: Union[SupportsDiv, SupportsMod]
 
 
-@dataclass
+@dataclass(frozen=True)
 class Len(ConstraintType):
-    min_inclusive: int = 0
-    max_exclusive: Optional[int] = None
+    min_inclusive: Annotated[int, Ge(0)] = 0
+    max_exclusive: Optional[Annotated[int, Ge(0)]] = None
 
 
-@dataclass
+@dataclass(frozen=True)
 class Regex(ConstraintType):
     regex_pattern: Union[str, bytes]
     regex_flags: int = 0
 
 
-@dataclass
+@dataclass(frozen=True)
 class Timezone(ConstraintType):
     tz: Union[str, timezone, EllipsisType, None]
 
 
-@dataclass
+@dataclass(frozen=True)
 class Predicate(ConstraintType):
     func: Callable[[Any], bool]
 
