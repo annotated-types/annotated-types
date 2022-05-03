@@ -52,6 +52,11 @@ class Gt(BaseMetadata):
     gt: SupportsGt
 
 
+# `Positive` might be more letter than `Gt(0)` but I believe it has a smaller cognitive overhead
+# we can add `Negative` when someone angrily demands it, but it'll be used orders of magnitude less, so can wait
+Positive = Gt(0)
+
+
 @dataclass(frozen=True)
 class Ge(BaseMetadata):
     ge: SupportsGe

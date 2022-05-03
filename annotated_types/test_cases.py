@@ -42,6 +42,9 @@ def cases() -> Iterable[Case]:
         [Decimal('1.123'), Decimal('0')],
     )
 
+    yield Case(Annotated[int, at.Positive], (1, 6, 1000), (0, -1, -1000))
+    yield Case(Annotated[float, at.Positive], (1, 0.1, 10), (0, -1, -0.1))
+
     yield Case(Annotated[int, at.Ge(4)], (4, 5, 6, 1000, 4), (0, -1))
     yield Case(Annotated[float, at.Ge(0.5)], (0.5, 0.6, 0.7, 0.8, 0.9), (0.4, 0.0, -0.1))
     yield Case(
