@@ -32,7 +32,7 @@ __all__ = (
     'Predicate',
     'LowerCase',
     'UpperCase',
-    'OnlyDigits',
+    'IsDigits',
     '__version__',
 )
 
@@ -150,5 +150,5 @@ StrType = TypeVar("StrType", bound=str)
 
 LowerCase = Annotated[StrType, Predicate(str.islower)]
 UpperCase = Annotated[StrType, Predicate(str.isupper)]
-OnlyDigits = Annotated[StrType, Predicate(str.isdigit)]
-OnlyAscii = Annotated[StrType, Predicate(str.isascii)]
+IsDigits = Annotated[StrType, Predicate(str.isdigit)]
+IsAscii = Annotated[StrType, Predicate(str.isascii)]
