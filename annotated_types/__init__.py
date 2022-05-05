@@ -3,6 +3,11 @@ from dataclasses import dataclass
 from datetime import timezone
 from typing import Any, Callable, Iterator, Optional, TypeVar, Union
 
+if sys.version_info < (3, 8):
+    from typing_extensions import Protocol
+else:
+    from typing import Protocol
+
 if sys.version_info < (3, 9):
     from typing_extensions import Annotated
 else:
@@ -37,14 +42,43 @@ __version__ = '0.2.0'
 T = TypeVar('T')
 
 
+# arguments that start with __ are considered
+# positional only
+# see https://peps.python.org/pep-0484/#positional-only-arguments
+
+
+class SupportsGt(Protocol):
+    def __gt__(self: T, __other: T) -> bool:
+        ...
+
+
+class SupportsGe(Protocol):
+    def __ge__(self: T, __other: T) -> bool:
+        ...
+
+
+class SupportsLt(Protocol):
+    def __lt__(self: T, __other: T) -> bool:
+        ...
+
+
+class SupportsLe(Protocol):
+    def __le__(self: T, __other: T) -> bool:
+        ...
+
+
+class SupportsMod(Protocol):
+    def __mod__(self: T, __other: T) -> T:
+        ...
+
+
+class SupportsDiv(Protocol):
+    def __div__(self: T, __other: T) -> T:
+        ...
+
+
 class BaseMetadata:
     pass
-
-
-if sys.version_info >= (3, 8):
-    from ._compat38 import SupportsDiv, SupportsGe, SupportsGt, SupportsLe, SupportsLt, SupportsMod
-else:
-    from ._compat37 import SupportsDiv, SupportsGe, SupportsGt, SupportsLe, SupportsLt, SupportsMod
 
 
 @dataclass(frozen=True)
