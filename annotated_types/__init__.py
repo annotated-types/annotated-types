@@ -30,9 +30,9 @@ __all__ = (
     'Regex',
     'Timezone',
     'Predicate',
-    'IsLower',
-    'IsUpper',
-    'IsDigit',
+    'LowerCase',
+    'UpperCase',
+    'OnlyDigits',
     '__version__',
 )
 
@@ -146,7 +146,9 @@ class Predicate(BaseMetadata):
     func: Callable[[Any], bool]
 
 
-IsLower = Predicate(str.islower)
-IsUpper = Predicate(str.isupper)
-IsDigit = Predicate(str.isdigit)
-IsAscii = Predicate(str.isascii)
+StrType = TypeVar("StrType", bound=str)
+
+LowerCase = Annotated[StrType, Predicate(str.islower)]
+UpperCase = Annotated[StrType, Predicate(str.isupper)]
+OnlyDigits = Annotated[StrType, Predicate(str.isdigit)]
+OnlyAscii = Annotated[StrType, Predicate(str.isascii)]
