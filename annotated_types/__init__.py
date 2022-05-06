@@ -106,7 +106,7 @@ class Le(BaseMetadata):
     le: SupportsLe
 
 
-@dataclass(frozen=True, **KW_ONLY)
+@dataclass(frozen=True, **KW_ONLY, **SLOTS)
 class Interval(BaseMetadata):
     gt: Union[SupportsGt, None] = None
     ge: Union[SupportsGe, None] = None
