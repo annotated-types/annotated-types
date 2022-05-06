@@ -15,8 +15,13 @@ else:
 
 if sys.version_info < (3, 10):
     EllipsisType = type(Ellipsis)
+    KW_ONLY = {}
+    SLOTS = {}
 else:
     from types import EllipsisType
+
+    KW_ONLY = {"kw_only": True}
+    SLOTS = {"slots": True}
 
 
 __all__ = (
@@ -81,27 +86,27 @@ class BaseMetadata:
     pass
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, **SLOTS)
 class Gt(BaseMetadata):
     gt: SupportsGt
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, **SLOTS)
 class Ge(BaseMetadata):
     ge: SupportsGe
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, **SLOTS)
 class Lt(BaseMetadata):
     lt: SupportsLt
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, **SLOTS)
 class Le(BaseMetadata):
     le: SupportsLe
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, **KW_ONLY)
 class Interval(BaseMetadata):
     gt: Union[SupportsGt, None] = None
     ge: Union[SupportsGe, None] = None
@@ -119,29 +124,29 @@ class Interval(BaseMetadata):
             yield Le(self.le)
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, **SLOTS)
 class MultipleOf(BaseMetadata):
     multiple_of: Union[SupportsDiv, SupportsMod]
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, **SLOTS)
 class Len(BaseMetadata):
     min_inclusive: Annotated[int, Ge(0)] = 0
     max_exclusive: Optional[Annotated[int, Ge(0)]] = None
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, **SLOTS)
 class Regex(BaseMetadata):
     regex_pattern: Union[str, bytes]
     regex_flags: int = 0
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, **SLOTS)
 class Timezone(BaseMetadata):
     tz: Union[str, timezone, EllipsisType, None]
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, **SLOTS)
 class Predicate(BaseMetadata):
     func: Callable[[Any], bool]
 
