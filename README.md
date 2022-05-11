@@ -89,22 +89,6 @@ to Len(), making all the following cases equivalent:
 Implementors: note that Len() should always have an integer value for
 `min_inclusive`, but `slice` objects can also have `start=None`.
 
-### Regex
-
-`Regex(regex_pattern=p, regex_flags=x)` implies that the string should contain a
-match for `p` with flags `x`, at any position in the string. If you want the
-full string to match, or the match to be at the start or end of the string,
-you can use boundary markers like `^...$`.
-
-`Regex()` can be used with unicode strings or byte strings; if either are allowed
-we suggest using one `Regex()` item for each type, and therefore ignoring `Regex()`
-items with the wrong string type.
-
-We do not specify the pattern syntax: libraries may choose to interpret it as
-the Python stdlib `re` module, `regex` package, ECMAscript syntax, etc.,
-and we encourage them to clearly document their chosen interpretation.
-The meaning of the `regex_flags` argument is also implementation-defined.
-
 ### Timezone
 
 `Timezone` can be used with a `datetime` or a `time` to express which timezones

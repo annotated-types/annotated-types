@@ -32,7 +32,6 @@ __all__ = (
     'Interval',
     'MultipleOf',
     'Len',
-    'Regex',
     'Timezone',
     'Predicate',
     'IsLower',
@@ -189,23 +188,6 @@ class Len(BaseMetadata):
 
     min_inclusive: Annotated[int, Ge(0)] = 0
     max_exclusive: Optional[Annotated[int, Ge(0)]] = None
-
-
-@dataclass(frozen=True, **SLOTS)
-class Regex(BaseMetadata):
-    """Regex(regex_pattern) implies that the string should contain a match ("search").
-
-    Regex() can be used with unicode strings or byte strings; if either are allowed
-    we suggest using one Regex() item for each type, and therefore ignoring Regex()
-    items with the wrong string type.
-
-    We do not specify the pattern syntax: libraries may choose to interpret it as
-    the Python stdlib ``re`` module, ``regex`` package, ECMAscript syntax, etc.,
-    and we encourage them to clearly document their chosen interpretation.
-    The meaning of the ``regex_flags`` argument is also implementation-defined.
-    """
-    regex_pattern: Union[str, bytes]
-    regex_flags: int = 0
 
 
 @dataclass(frozen=True, **SLOTS)
