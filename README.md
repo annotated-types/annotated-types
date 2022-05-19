@@ -38,7 +38,7 @@ class MyClass:
 
 ## Documentation
 
-_While `annotated-types` avoids runtime validation for performance\, users should not
+_While `annotated-types` avoids runtime checks for performance, users should not
 construct invalid combinations such as `MultipleOf("non-numeric")` or `Annotated[int, Len(3)]`.
 Downstream implementors may choose to raise an error, emit a warning, silently ignore
 a metadata item, etc., if the metadata objects described below are used with an
@@ -55,6 +55,12 @@ No interpretation is specified for special values such as `nan`.
 We suggest that implementors may also interpret `functools.partial(operator.le, 1.5)`
 as being equivalent to `Gt(1.5)`, for users who wish to avoid a runtime dependency on
 the `annotated-types` package.
+
+To be explicit, these types have the following meanings:
+* `Gt(x)` - value must be "Greater Than" `x` - equivalent to exclusive minimum
+* `Ge(x)` - value must be "Greater than or Equal" to `x` - equivalent to inclusive minimum
+* `Lt(x)` - value must be "Less Than" `x` - equivalent to exclusive maximum
+* `Le(x)` - value must be "Less than or Equal" to `x` - equivalent to inclusive maximum
 
 ### Interval
 
@@ -75,9 +81,9 @@ distinct behaviours, and libraries to carefully document which they implement.
 
 ### Len
 
-Len() implies that `min_inclusive <= len(value) < max_exclusive`.
+`Len()` implies that `min_inclusive <= len(value) < max_exclusive`.
 We recommend that libraries interpret `slice` objects identically
-to Len(), making all the following cases equivalent:
+to `Len()`, making all the following cases equivalent:
 
 - `Annotated[list, :10]`
 - `Annotated[list, 0:10]`
