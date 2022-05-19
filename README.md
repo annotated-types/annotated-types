@@ -29,11 +29,15 @@ from typing import Annotated
 from annotated_types import Gt, Len
 
 class MyClass:
-    age: Annotated[int, Gt(18)]
-    factors: list[Annotated[int, Predicate(is_prime)]]
+    age: Annotated[int, Gt(18)]                         # Valid: 19, 20, ...
+                                                        # Invalid: 17, 18, "19", 19.0, ...
+    factors: list[Annotated[int, Predicate(is_prime)]]  # Valid: 2, 3, 5, 7, 11, ...
+                                                        # Invalid: 4, 8, -2, 5.0, "prime", ...
 
-    my_list: Annotated[list[int], 0:10]
-    your_set: Annotated[set[int], Len(0, 10)]
+    my_list: Annotated[list[int], 0:10]                 # Valid: [], [10, 20, 30, 40, 50]
+                                                        # Invalid: (1, 2), ["abc"], [0] * 20
+    your_set: Annotated[set[int], Len(0, 10)]           # Valid: {1, 2, 3}, ...
+                                                        # Invalid: "Well, you get the idea!"
 ```
 
 ## Documentation
@@ -77,7 +81,10 @@ treated as per the single bounds above.
    where `int(value / multiple_of) == value / multiple_of`.
 
 We encourage users to be aware of these two common interpretations and their
-distinct behaviours, and libraries to carefully document which they implement.
+distinct behaviours, especially since very large or non-integer numbers make
+it easy to cause silent data corruption due to floating-point imprecision.
+
+We encourage libraries to carefully document which interpretation they implement.
 
 ### Len
 
@@ -92,6 +99,10 @@ to `Len()`, making all the following cases equivalent:
 - `Annotated[list, Len(0, 10)]`
 - `Annotated[list, Len(max_exclusive=10)]`
 
+And of course you can describe lists of three or more elements (`Len(min_inclusive=3)`),
+four, five, or six elements (`Len(4, 7)` - note exclusive-maximum!) or *exactly*
+eight elements (`Len(8, 9)`).
+
 Implementors: note that Len() should always have an integer value for
 `min_inclusive`, but `slice` objects can also have `start=None`.
 
@@ -103,7 +114,7 @@ are allowed. `Annotated[datetime, Timezone[None]]` must be a naive datetime.
 expresses that any timezone-aware datetime is allowed. You may also pass a specific
 timezone string or `timezone` object such as `Timezone[timezone.utc]` or
 `Timezone["Africa/Abidjan"]` to express that you only allow a specific timezone,
-though we note that this is often a symptom of poor design.
+though we note that this is often a symptom of fragile design.
 
 ### Predicate
 
@@ -116,6 +127,17 @@ We provide a few predefined predicates for common string constraints:
 `IsDigit = Predicate(str.isdigit)`. Users are encouraged to use methods which
 can be given special handling, and avoid indirection like `lambda s: s.lower()`.
 
+Some libraries might have special logic to handle known or understandable predicates,
+for example by checking for `str.isdigit` and using its presence to both call custom
+logic to enforce digit-only strings, and customise some generated external schema.
+
+We do not specify what behaviour should be expected for predicates that raise
+an exception.  For example `Annotated[int, Predicate(str.isdigit)]` might silently
+skip invalid constraints, or statically raise an error; or it might try calling it
+and then propogate or discard the resulting
+`TypeError: descriptor 'isdigit' for 'str' objects doesn't apply to a 'int' object`
+exception.  We encourage libraries to document the behaviour they choose.
+
 ## Design & History
 
 This package was designed at the PyCon 2022 sprints by the maintainers of Pydantic
@@ -125,5 +147,5 @@ provide more informative annotations for use by runtime libraries.
 It is deliberately minimal, and following PEP-593 allows considerable downstream
 discretion in what (if anything!) they choose to support. Nonetheless, we expect
 that staying simple and covering _only_ the most common use-cases will give users
-and maintainers the best experience we can. If you'd like more - follow our lead
-and define it downstream!
+and maintainers the best experience we can. If you'd like more constraints for your
+types - follow our lead, by defining them and documenting them downstream!

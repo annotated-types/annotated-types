@@ -218,6 +218,15 @@ class Predicate(BaseMetadata):
     ``IsLower = Predicate(str.islower)``, ``IsUpper = Predicate(str.isupper)``, and
     ``IsDigit = Predicate(str.isdigit)``. Users are encouraged to use methods which
     can be given special handling, and avoid indirection like ``lambda s: s.lower()``.
+
+    Some libraries might have special logic to handle certain predicates, e.g. by
+    checking for `str.isdigit` and using its presence to both call custom logic to
+    enforce digit-only strings, and customise some generated external schema.
+
+    We do not specify what behaviour should be expected for predicates that raise
+    an exception.  For example `Annotated[int, Predicate(str.isdigit)]` might silently
+    skip invalid constraints, or statically raise an error; or it might try calling it
+    and then propogate or discard the resulting exception.
     """
 
     func: Callable[[Any], bool]
