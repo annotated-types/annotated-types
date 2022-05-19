@@ -44,13 +44,6 @@ def check_multiple_of(constraint: Constraint, val: Any) -> bool:
     return val % constraint.multiple_of == 0
 
 
-def check_regex(constraint: Constraint, val: Any) -> bool:
-    assert isinstance(constraint, (annotated_types.Regex, re.Pattern))
-    if isinstance(constraint, annotated_types.Regex):
-        return re.fullmatch(constraint.regex_pattern, val, flags=constraint.regex_flags) is not None
-    return constraint.fullmatch(val) is not None
-
-
 def check_len(constraint: Constraint, val: Any) -> bool:
     if isinstance(constraint, slice):
         constraint = annotated_types.Len(constraint.start or 0, constraint.stop)
@@ -91,11 +84,9 @@ VALIDATORS: Dict[Type[Constraint], Validator] = {
     annotated_types.Ge: check_ge,
     annotated_types.Le: check_le,
     annotated_types.MultipleOf: check_multiple_of,
-    annotated_types.Regex: check_regex,
     annotated_types.Predicate: check_predicate,
     annotated_types.Len: check_len,
     annotated_types.Timezone: check_timezone,
-    re.Pattern: check_regex,  # type: ignore
     slice: check_len,
 }
 
