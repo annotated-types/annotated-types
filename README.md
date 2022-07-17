@@ -26,7 +26,7 @@ pip install annotated-types
 
 ```python
 from typing import Annotated
-from annotated_types import Gt, Len
+from annotated_types import Gt, Len, Predicate
 
 class MyClass:
     age: Annotated[int, Gt(18)]                         # Valid: 19, 20, ...
@@ -109,11 +109,11 @@ Implementors: note that Len() should always have an integer value for
 ### Timezone
 
 `Timezone` can be used with a `datetime` or a `time` to express which timezones
-are allowed. `Annotated[datetime, Timezone[None]]` must be a naive datetime.
+are allowed. `Annotated[datetime, Timezone(None)]` must be a naive datetime.
 `Timezone[...]` ([literal ellipsis](https://docs.python.org/3/library/constants.html#Ellipsis))
 expresses that any timezone-aware datetime is allowed. You may also pass a specific
-timezone string or `timezone` object such as `Timezone[timezone.utc]` or
-`Timezone["Africa/Abidjan"]` to express that you only allow a specific timezone,
+timezone string or `timezone` object such as `Timezone(timezone.utc)` or
+`Timezone("Africa/Abidjan")` to express that you only allow a specific timezone,
 though we note that this is often a symptom of fragile design.
 
 ### Predicate

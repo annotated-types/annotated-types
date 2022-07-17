@@ -194,12 +194,12 @@ class Len(BaseMetadata):
 class Timezone(BaseMetadata):
     """Timezone(tz=...) requires a datetime to be aware (or ``tz=None``, naive).
 
-    ``Annotated[datetime, Timezone[None]]`` must be a naive datetime.
+    ``Annotated[datetime, Timezone(None)]`` must be a naive datetime.
     ``Timezone[...]`` (the ellipsis literal) expresses that the datetime must be
     tz-aware bug any timezone is allowed.
 
     You may also pass a specific timezone string or timezone object such as
-    ``Timezone[timezone.utc]`` or ``Timezone["Africa/Abidjan"]`` to express that
+    ``Timezone(timezone.utc)`` or ``Timezone("Africa/Abidjan")`` to express that
     you only allow a specific timezone, though we note that this is often
     a symptom of poor design.
     """
