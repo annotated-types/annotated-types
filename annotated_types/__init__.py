@@ -88,6 +88,8 @@ class BaseMetadata:
     can do `isinstance(..., BaseMetadata)` while traversing field annotations.
     """
 
+    __slots__ = ()
+
 
 @dataclass(frozen=True, **SLOTS)
 class Gt(BaseMetadata):
@@ -133,7 +135,7 @@ class Le(BaseMetadata):
     le: SupportsLe
 
 
-class GroupedMetadata:
+class GroupedMetadata(BaseMetadata):
     """A grouping of multiple BaseMetadata objects.
 
     Concrete implementations should override this to add their own
@@ -144,7 +146,7 @@ class GroupedMetadata:
     >>> class Field(GroupedMetadata):
     >>>     gt: float | None = None
     >>>     description: str | None = None
-    ...    
+    ...
     >>>     def __iter__(self) -> Iterable[BaseMetadata]:
     >>>         if self.gt is not None:
     >>>             yield Gt(self.gt)
@@ -156,7 +158,10 @@ class GroupedMetadata:
 
     - `Annotated[int, Field(...)]`
     - `Annotated[int, *Field(...)]` (PEP-646)
-    """
+    """  # noqa: trailing-whitespace
+
+    __slots__ = ()
+
     def __iter__(self) -> Iterable[BaseMetadata]:
         return ()
 
