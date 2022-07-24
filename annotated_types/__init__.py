@@ -161,7 +161,6 @@ class GroupedMetadata:
         return ()
 
 
-
 @dataclass(frozen=True, **KW_ONLY, **SLOTS)
 class Interval(GroupedMetadata):
     """Interval can express inclusive or exclusive bounds with a single object.
