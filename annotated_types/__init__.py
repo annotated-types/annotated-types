@@ -153,6 +153,8 @@ class GroupedMetadata(BaseMetadata):
     >>>         if self.description is not None:
     >>>             yield Description(self.gt)
 
+    Also see the implementation of `Interval` below for an example.
+
     Parsers should recognize this and unpack it so that it can be used
     both with and without unpacking:
 
