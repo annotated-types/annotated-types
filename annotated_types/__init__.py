@@ -158,7 +158,7 @@ class GroupedMetadata(BaseMetadata):
     Parsers should recognize this and unpack it so that it can be used
     both with and without unpacking:
 
-    - `Annotated[int, Field(...)]`
+    - `Annotated[int, Field(...)]` (parser must unpack Field)
     - `Annotated[int, *Field(...)]` (PEP-646)
     """  # noqa: trailing-whitespace
 
