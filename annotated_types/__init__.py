@@ -164,7 +164,7 @@ class GroupedMetadata(BaseMetadata):
 
     __slots__ = ()
 
-    def __iter__(self) -> Iterable[BaseMetadata]:
+    def __iter__(self) -> Iterable[BaseMetadata]:  # pragma: no cover
         return ()
 
 
