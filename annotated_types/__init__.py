@@ -1,7 +1,7 @@
 import sys
 from dataclasses import dataclass
 from datetime import timezone
-from typing import Any, Callable, Iterator, Optional, TypeVar, Union
+from typing import Any, Callable, Iterable, Optional, TypeVar, Union
 
 if sys.version_info < (3, 8):
     from typing_extensions import Protocol
@@ -82,7 +82,11 @@ class SupportsDiv(Protocol):
 
 
 class BaseMetadata:
-    pass
+    """Base class for all metadata.
+
+    This exists mainly so that implementers
+    can do `isinstance(..., BaseMetadata)` while traversing field annotations.
+    """
 
 
 @dataclass(frozen=True, **SLOTS)
@@ -129,8 +133,37 @@ class Le(BaseMetadata):
     le: SupportsLe
 
 
+class GroupedMetadata:
+    """A grouping of multiple BaseMetadata objects.
+
+    Concrete implementations should override this to add their own
+    metadata.
+    For example:
+
+    >>> @dataclass
+    >>> class Field(GroupedMetadata):
+    >>>     gt: float | None = None
+    >>>     description: str | None = None
+    ...    
+    >>>     def __iter__(self) -> Iterable[BaseMetadata]:
+    >>>         if self.gt is not None:
+    >>>             yield Gt(self.gt)
+    >>>         if self.description is not None:
+    >>>             yield Description(self.gt)
+
+    Parsers should recognize this and unpack it so that it can be used
+    both with and without unpacking:
+
+    - `Annotated[int, Field(...)]`
+    - `Annotated[int, *Field(...)]` (PEP-646)
+    """
+    def __iter__(self) -> Iterable[BaseMetadata]:
+        return ()
+
+
+
 @dataclass(frozen=True, **KW_ONLY, **SLOTS)
-class Interval(BaseMetadata):
+class Interval(GroupedMetadata):
     """Interval can express inclusive or exclusive bounds with a single object.
 
     It accepts keyword arguments ``gt``, ``ge``, ``lt``, and/or ``le``, which
@@ -142,8 +175,8 @@ class Interval(BaseMetadata):
     lt: Union[SupportsLt, None] = None
     le: Union[SupportsLe, None] = None
 
-    def __iter__(self) -> Iterator[BaseMetadata]:
-        """Unpack an Interval into zero or more single-bounds, as per PEP-646."""
+    def __iter__(self) -> Iterable[BaseMetadata]:
+        """Unpack an Interval into zero or more single-bounds."""
         if self.gt is not None:
             yield Gt(self.gt)
         if self.ge is not None:
