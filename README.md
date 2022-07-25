@@ -171,7 +171,7 @@ class Pattern(BaseMetadata):
 ```
 
 Note that you do not have to inherit from `BaseMetadata` if you are creating a grouping of `BaseMetadata`.
-In that case you should inherit from `GroupedMetadata` so that the grouping itself is not considered metadata.
+In that case you should inherit from `GroupedMetadata` so that the grouping itself is not considered metadata (it is a _collection_ of metadata).
 
 #### `GroupedMetadata`
 
