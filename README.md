@@ -145,6 +145,10 @@ exception.  We encourage libraries to document the behaviour they choose.
 
 ### Consuming and creating metadata
 
+All `annotated-types` metadata should inherit from one of `BaseMetadata` or `GroupedMetadata`, which are base classes provided by `annotated-types`.
+
+In this section we discuss how each one of these classes can be used and how to use them when consuming metadata.
+
 #### `BaseMetadata`
 
 We provide `BaseMetadata` as base class for all metadata that serves as a namespace and identifier to easily filter metadata from this package out from other metadata that may be contained in the `Annotated[...]` type annotation.
@@ -165,6 +169,9 @@ class Pattern(BaseMetadata):
     """Regex pattern constraint"""
     pattern: str
 ```
+
+Note that you do not have to inherit from `BaseMetadata` if you are creating a grouping of `BaseMetadata`.
+In that case you should inherit from `GroupedMetadata` so that the grouping itself is not considered metadata.
 
 #### `GroupedMetadata`
 
@@ -194,6 +201,8 @@ class Field(GroupedMetadata):
 
 Note that `GroupedMetadata` and `Field` do not inherit from `BaseMetadata` and are not considered metadata in and of themselves.
 Implementers should instead check for `GroupedMetadata` and unpack it by iterating over the object to get the `BaseMetadata` objects it contains.
+
+Another example use case is the convenience `annotated_types.Interval` class, which unpacks itself into `Gt`, `Lt`, etc.
 
 #### Consuming metadata
 
