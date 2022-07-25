@@ -100,8 +100,7 @@ def get_constraints(tp: type) -> Iterator[Constraint]:
         if isinstance(arg, (annotated_types.BaseMetadata, re.Pattern, slice)):
             yield arg
         elif isinstance(arg, annotated_types.GroupedMetadata):
-            for case in arg:
-                yield case
+            yield from arg
 
 
 def is_valid(tp: type, value: Any) -> bool:
