@@ -1,5 +1,4 @@
 import sys
-from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import timezone
 from typing import Any, Callable, Iterator, Optional, TypeVar, Union
@@ -136,7 +135,7 @@ class Le(BaseMetadata):
     le: SupportsLe
 
 
-class GroupedMetadata(ABC):
+class GroupedMetadata:
     """A grouping of multiple BaseMetadata objects.
 
     `GroupedMetadata` on its own is not metadata and has no meaning.
@@ -169,9 +168,13 @@ class GroupedMetadata(ABC):
 
     __slots__ = ()
 
-    @abstractmethod
-    def __iter__(self) -> Iterator[BaseMetadata]:  # pragma: no cover
-        pass
+    def __init_subclass__(cls, *args: Any, **kwargs: Any) -> None:
+        super().__init_subclass__(*args, **kwargs)
+        if cls.__iter__ is GroupedMetadata.__iter__:
+            raise TypeError("Can't subclass GroupedMetadata without implementing __iter__")
+
+    def __iter__(self) -> Iterator[BaseMetadata]:
+        raise NotImplementedError
 
 
 @dataclass(frozen=True, **KW_ONLY, **SLOTS)
