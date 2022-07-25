@@ -98,11 +98,10 @@ def get_constraints(tp: type) -> Iterator[Constraint]:
     next(args)
     for arg in args:
         if isinstance(arg, (annotated_types.BaseMetadata, re.Pattern, slice)):
-            if isinstance(arg, annotated_types.Interval):
-                for case in arg:
-                    yield case
-            else:
-                yield arg
+            yield arg
+        elif isinstance(arg, annotated_types.GroupedMetadata):
+            for case in arg:
+                yield case
 
 
 def is_valid(tp: type, value: Any) -> bool:
