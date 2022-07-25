@@ -145,7 +145,7 @@ exception.  We encourage libraries to document the behaviour they choose.
 
 ### Consuming and creating metadata
 
-#### BaseMetadata
+#### `BaseMetadata`
 
 We provide `BaseMetadata` as base class for all metadata that serves as a namespace and identifier to easily filter metadata from this package out from other metadata that may be contained in the `Annotated[...]` type annotation.
 
@@ -166,7 +166,7 @@ class Pattern(BaseMetadata):
     pattern: str
 ```
 
-#### GroupedMetadata
+#### `GroupedMetadata`
 
 Implementers may choose to provide a convenience wrapper that groups multiple pieces of metadata.
 This can help reduce verbosity and cognitive overhead for users.
@@ -194,6 +194,13 @@ class Field(GroupedMetadata):
 
 Note that `GroupedMetadata` and `Field` do not inherit from `BaseMetadata` and are not considered metadata in and of themselves.
 Implementers should instead check for `GroupedMetadata` and unpack it by iterating over the object to get the `BaseMetadata` objects it contains.
+
+#### Consuming metadata
+
+We intend to not be perspcriptive as to _how_ the metadata and constraints are used, but as an example of how one might hypothetically parse constraints from types annotations see our [implementation in test_main.py](https://github.com/annotated-types/annotated-types/blob/f59cf6d1b5255a0fe359b93896759a180bec30ae/tests/test_main.py#L94-L103).
+
+It is up to the implementer to determine how this metadata is used.
+You could use the metadata for runtime type checking, for generating schemas or to generate example data, amongst other use cases.
 
 ## Design & History
 
