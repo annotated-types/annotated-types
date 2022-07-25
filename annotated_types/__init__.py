@@ -1,7 +1,8 @@
 import sys
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from datetime import timezone
-from typing import Any, Callable, Iterable, Optional, TypeVar, Union
+from typing import Any, Callable, Iterator, Optional, TypeVar, Union
 
 if sys.version_info < (3, 8):
     from typing_extensions import Protocol
@@ -135,11 +136,15 @@ class Le(BaseMetadata):
     le: SupportsLe
 
 
-class GroupedMetadata(BaseMetadata):
+class GroupedMetadata(ABC):
     """A grouping of multiple BaseMetadata objects.
 
-    Concrete implementations should override this to add their own
-    metadata.
+    `GroupedMetadata` on its own is not metadata and has no meaning.
+    All it the the constraint and metadata should be fully expressable
+    in terms of the `BaseMetadata`'s returned by `GroupedMetadata.__iter__()`.
+
+    Concrete implementations should override `GroupedMetadata.__iter__()`
+    to add their own metadata.
     For example:
 
     >>> @dataclass
@@ -164,8 +169,9 @@ class GroupedMetadata(BaseMetadata):
 
     __slots__ = ()
 
-    def __iter__(self) -> Iterable[BaseMetadata]:  # pragma: no cover
-        return ()
+    @abstractmethod
+    def __iter__(self) -> Iterator[BaseMetadata]:  # pragma: no cover
+        pass
 
 
 @dataclass(frozen=True, **KW_ONLY, **SLOTS)
@@ -181,7 +187,7 @@ class Interval(GroupedMetadata):
     lt: Union[SupportsLt, None] = None
     le: Union[SupportsLe, None] = None
 
-    def __iter__(self) -> Iterable[BaseMetadata]:
+    def __iter__(self) -> Iterator[BaseMetadata]:
         """Unpack an Interval into zero or more single-bounds."""
         if self.gt is not None:
             yield Gt(self.gt)
