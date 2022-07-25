@@ -173,7 +173,7 @@ class GroupedMetadata:
         if cls.__iter__ is GroupedMetadata.__iter__:
             raise TypeError("Can't subclass GroupedMetadata without implementing __iter__")
 
-    def __iter__(self) -> Iterator[BaseMetadata]:  # pragma: no cover
+    def __iter__(self) -> Iterator[BaseMetadata]:
         raise NotImplementedError
 
 
