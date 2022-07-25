@@ -1,3 +1,4 @@
+import re
 import sys
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, Iterator, Type, Union
@@ -15,7 +16,7 @@ if TYPE_CHECKING:
 import annotated_types
 from annotated_types.test_cases import Case, cases
 
-Constraint = Union[annotated_types.BaseMetadata, slice]
+Constraint = Union[annotated_types.BaseMetadata, slice, "re.Pattern[bytes]", "re.Pattern[str]"]
 
 
 def check_gt(constraint: Constraint, val: Any) -> bool:
@@ -96,12 +97,10 @@ def get_constraints(tp: type) -> Iterator[Constraint]:
     args = iter(get_args(tp))
     next(args)
     for arg in args:
-        if isinstance(arg, (annotated_types.BaseMetadata, slice)):
-            if isinstance(arg, annotated_types.Interval):
-                for case in arg:
-                    yield case
-            else:
-                yield arg
+        if isinstance(arg, (annotated_types.BaseMetadata, re.Pattern, slice)):
+            yield arg
+        elif isinstance(arg, annotated_types.GroupedMetadata):
+            yield from arg
 
 
 def is_valid(tp: type, value: Any) -> bool:
