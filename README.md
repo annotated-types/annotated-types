@@ -42,13 +42,17 @@ class MyClass:
 
 ## Documentation
 
+### Included metadata & constraints
+
+#### Validation of metadata/constraints themselves
+
 _While `annotated-types` avoids runtime checks for performance, users should not
 construct invalid combinations such as `MultipleOf("non-numeric")` or `Annotated[int, Len(3)]`.
 Downstream implementors may choose to raise an error, emit a warning, silently ignore
 a metadata item, etc., if the metadata objects described below are used with an
 incompatible type - or for any other reason!_
 
-### Gt, Ge, Lt, Le
+#### Gt, Ge, Lt, Le
 
 Express inclusive and/or exclusive bounds on orderable values - which may be numbers,
 dates, times, strings, sets, etc. Note that the boundary value need not be of the
@@ -61,18 +65,19 @@ as being equivalent to `Gt(1.5)`, for users who wish to avoid a runtime dependen
 the `annotated-types` package.
 
 To be explicit, these types have the following meanings:
+
 * `Gt(x)` - value must be "Greater Than" `x` - equivalent to exclusive minimum
 * `Ge(x)` - value must be "Greater than or Equal" to `x` - equivalent to inclusive minimum
 * `Lt(x)` - value must be "Less Than" `x` - equivalent to exclusive maximum
 * `Le(x)` - value must be "Less than or Equal" to `x` - equivalent to inclusive maximum
 
-### Interval
+#### Interval
 
 `Interval(gt, ge, lt, le)` allows you to specify an upper and lower bound with a single
 metadata object. `None` attributes should be ignored, and non-`None` attributes
 treated as per the single bounds above.
 
-### MultipleOf
+#### MultipleOf
 
 `MultipleOf(multiple_of=x)` might be interpreted in two ways:
 
@@ -86,18 +91,18 @@ it easy to cause silent data corruption due to floating-point imprecision.
 
 We encourage libraries to carefully document which interpretation they implement.
 
-### Len
+#### Len
 
 `Len()` implies that `min_inclusive <= len(value) < max_exclusive`.
 We recommend that libraries interpret `slice` objects identically
 to `Len()`, making all the following cases equivalent:
 
-- `Annotated[list, :10]`
-- `Annotated[list, 0:10]`
-- `Annotated[list, None:10]`
-- `Annotated[list, slice(0, 10)]`
-- `Annotated[list, Len(0, 10)]`
-- `Annotated[list, Len(max_exclusive=10)]`
+* `Annotated[list, :10]`
+* `Annotated[list, 0:10]`
+* `Annotated[list, None:10]`
+* `Annotated[list, slice(0, 10)]`
+* `Annotated[list, Len(0, 10)]`
+* `Annotated[list, Len(max_exclusive=10)]`
 
 And of course you can describe lists of three or more elements (`Len(min_inclusive=3)`),
 four, five, or six elements (`Len(4, 7)` - note exclusive-maximum!) or *exactly*
@@ -106,7 +111,7 @@ eight elements (`Len(8, 9)`).
 Implementors: note that Len() should always have an integer value for
 `min_inclusive`, but `slice` objects can also have `start=None`.
 
-### Timezone
+#### Timezone
 
 `Timezone` can be used with a `datetime` or a `time` to express which timezones
 are allowed. `Annotated[datetime, Timezone(None)]` must be a naive datetime.
@@ -116,7 +121,7 @@ timezone string or `timezone` object such as `Timezone(timezone.utc)` or
 `Timezone("Africa/Abidjan")` to express that you only allow a specific timezone,
 though we note that this is often a symptom of fragile design.
 
-### Predicate
+#### Predicate
 
 `Predicate(func: Callable)` expresses that `func(value)` is truthy for valid values.
 Users should prefer the statically inspectable metadata above, but if you need
@@ -137,6 +142,58 @@ skip invalid constraints, or statically raise an error; or it might try calling 
 and then propogate or discard the resulting
 `TypeError: descriptor 'isdigit' for 'str' objects doesn't apply to a 'int' object`
 exception.  We encourage libraries to document the behaviour they choose.
+
+### Consuming and creating metadata
+
+#### BaseMetadata
+
+We provide `BaseMetadata` as base class for all metadata that serves as a namespace and identifier to easily filter metadata from this package out from other metadata that may be contained in the `Annotated[...]` type annotation.
+
+If you are creating your own metadata, you _should_ inherit from `annotated_types.BaseMetadata`:
+
+```python
+from dataclasses import dataclass
+from annotated_types import BaseMetadata, GroupedMetadata
+
+@dataclass
+class Description(BaseMetadata):
+    """Description of a data type/field"""
+    description: str
+
+@dataclass
+class Pattern(BaseMetadata):
+    """Regex pattern constraint"""
+    pattern: str
+```
+
+#### GroupedMetadata
+
+Implementers may choose to provide a convenience wrapper that groups multiple pieces of metadata.
+This can help reduce verbosity and cognitive overhead for users.
+For example, an implementer might provide a `Field` or `Meta` type that accepts keyword arguments and transforms these into low-level metadata:
+
+```python
+from dataclasses import dataclass
+from typing import Iterator
+from annotated_types import BaseMetadata, GroupedMetadata, Ge
+
+@dataclass
+class Field(GroupedMetadata):
+    ge: int | None = None
+    pattern: str | None = None
+    description: str | None = None
+
+    def __iter__(self) -> Iterator[BaseMetadata]:
+        if self.ge is not None:
+            yield Ge(self.ge)
+        if self.pattern is not None:
+            yield Pattern(self.pattern)  # defined above
+        if self.description is not None:
+            yield Description(self.description)  # defined above
+```
+
+Note that `GroupedMetadata` and `Field` do not inherit from `BaseMetadata` and are not considered metadata in and of themselves.
+Implementers should instead check for `GroupedMetadata` and unpack it by iterating over the object to get the `BaseMetadata` objects it contains.
 
 ## Design & History
 
