@@ -170,7 +170,7 @@ class Pattern(BaseMetadata):
     pattern: str
 ```
 
-Note that you do not have to inherit from `BaseMetadata` if you are creating a grouping of `BaseMetadata`.
+Note that you should not inherit from `BaseMetadata` if you are creating a grouping of `BaseMetadata`.
 In that case you should inherit from `GroupedMetadata` so that the grouping itself is not considered metadata (it is a _collection_ of metadata).
 
 #### `GroupedMetadata`
