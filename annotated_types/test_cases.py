@@ -1,7 +1,7 @@
 import sys
 from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal
-from typing import Any, Dict, Iterable, List, NamedTuple, Set, Tuple
+from typing import Any, Dict, Iterable, Iterator, List, NamedTuple, Set, Tuple
 
 if sys.version_info < (3, 9):
     from typing_extensions import Annotated
@@ -126,3 +126,10 @@ def cases() -> Iterable[Case]:
     yield Case(at.IsAscii[str], ['123', 'foo bar'], ['£100', '😊', 'whatever 👀'])
 
     yield Case(Annotated[int, at.Predicate(lambda x: x % 2 == 0)], [0, 2, 4], [1, 3, 5])
+
+    # custom GroupedMetadata
+    class MyCustomGroupedMetadata(at.GroupedMetadata):
+        def __iter__(self) -> Iterator[at.Predicate]:
+            yield at.Predicate(lambda x: float(x).is_integer())
+
+    yield Case(Annotated[float, MyCustomGroupedMetadata()], [0, 2.0], [0.01, 1.5])

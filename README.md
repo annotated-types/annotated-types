@@ -61,6 +61,7 @@ as being equivalent to `Gt(1.5)`, for users who wish to avoid a runtime dependen
 the `annotated-types` package.
 
 To be explicit, these types have the following meanings:
+
 * `Gt(x)` - value must be "Greater Than" `x` - equivalent to exclusive minimum
 * `Ge(x)` - value must be "Greater than or Equal" to `x` - equivalent to inclusive minimum
 * `Lt(x)` - value must be "Less Than" `x` - equivalent to exclusive maximum
@@ -92,12 +93,12 @@ We encourage libraries to carefully document which interpretation they implement
 We recommend that libraries interpret `slice` objects identically
 to `Len()`, making all the following cases equivalent:
 
-- `Annotated[list, :10]`
-- `Annotated[list, 0:10]`
-- `Annotated[list, None:10]`
-- `Annotated[list, slice(0, 10)]`
-- `Annotated[list, Len(0, 10)]`
-- `Annotated[list, Len(max_exclusive=10)]`
+* `Annotated[list, :10]`
+* `Annotated[list, 0:10]`
+* `Annotated[list, None:10]`
+* `Annotated[list, slice(0, 10)]`
+* `Annotated[list, Len(0, 10)]`
+* `Annotated[list, Len(max_exclusive=10)]`
 
 And of course you can describe lists of three or more elements (`Len(min_inclusive=3)`),
 four, five, or six elements (`Len(4, 7)` - note exclusive-maximum!) or *exactly*
@@ -137,6 +138,43 @@ skip invalid constraints, or statically raise an error; or it might try calling 
 and then propogate or discard the resulting
 `TypeError: descriptor 'isdigit' for 'str' objects doesn't apply to a 'int' object`
 exception.  We encourage libraries to document the behaviour they choose.
+
+### Integrating downstream types with `GroupedMetadata`
+
+Implementers may choose to provide a convenience wrapper that groups multiple pieces of metadata.
+This can help reduce verbosity and cognitive overhead for users.
+For example, an implementer like Pydantic might provide a `Field` or `Meta` type that accepts keyword arguments and transforms these into low-level metadata:
+
+```python
+from dataclasses import dataclass
+from typing import Iterator
+from annotated_types import GroupedMetadata, Ge
+
+@dataclass
+class Field(GroupedMetadata):
+    ge: int | None = None
+    description: str | None = None
+
+    def __iter__(self) -> Iterator[object]:
+        # Iterating over a GroupedMetadata object should yield annotated-types
+        # constraint metadata objects which describe it as fully as possible,
+        # and may include other unknown objects too.
+        if self.ge is not None:
+            yield Ge(self.ge)
+        if self.description is not None:
+            yield Description(self.description)
+```
+
+Libraries consuming annotated-types constraints should check for `GroupedMetadata` and unpack it by iterating over the object and treating the results as if they had been "unpacked" in the `Annotated` type.  The same logic should be applied to the [PEP 646 `Unpack` type](https://peps.python.org/pep-0646/), so that `Annotated[T, Field(...)]`, `Annotated[T, Unpack[Field(...)]]` and `Annotated[T, *Field(...)]` are all treated consistently.
+
+Our own `annotated_types.Interval` class is a `GroupedMetadata` which unpacks itself into `Gt`, `Lt`, etc., so this is not an abstract concern.
+
+### Consuming metadata
+
+We intend to not be perspcriptive as to _how_ the metadata and constraints are used, but as an example of how one might parse constraints from types annotations see our [implementation in `test_main.py`](https://github.com/annotated-types/annotated-types/blob/f59cf6d1b5255a0fe359b93896759a180bec30ae/tests/test_main.py#L94-L103).
+
+It is up to the implementer to determine how this metadata is used.
+You could use the metadata for runtime type checking, for generating schemas or to generate example data, amongst other use cases.
 
 ## Design & History
 

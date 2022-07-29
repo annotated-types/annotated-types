@@ -25,6 +25,7 @@ else:
 
 
 __all__ = (
+    'GroupedMetadata',
     'Gt',
     'Ge',
     'Lt',
