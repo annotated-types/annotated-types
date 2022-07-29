@@ -42,17 +42,13 @@ class MyClass:
 
 ## Documentation
 
-### Included metadata & constraints
-
-#### Validation of metadata/constraints themselves
-
 _While `annotated-types` avoids runtime checks for performance, users should not
 construct invalid combinations such as `MultipleOf("non-numeric")` or `Annotated[int, Len(3)]`.
 Downstream implementors may choose to raise an error, emit a warning, silently ignore
 a metadata item, etc., if the metadata objects described below are used with an
 incompatible type - or for any other reason!_
 
-#### Gt, Ge, Lt, Le
+### Gt, Ge, Lt, Le
 
 Express inclusive and/or exclusive bounds on orderable values - which may be numbers,
 dates, times, strings, sets, etc. Note that the boundary value need not be of the
@@ -71,13 +67,13 @@ To be explicit, these types have the following meanings:
 * `Lt(x)` - value must be "Less Than" `x` - equivalent to exclusive maximum
 * `Le(x)` - value must be "Less than or Equal" to `x` - equivalent to inclusive maximum
 
-#### Interval
+### Interval
 
 `Interval(gt, ge, lt, le)` allows you to specify an upper and lower bound with a single
 metadata object. `None` attributes should be ignored, and non-`None` attributes
 treated as per the single bounds above.
 
-#### MultipleOf
+### MultipleOf
 
 `MultipleOf(multiple_of=x)` might be interpreted in two ways:
 
@@ -91,7 +87,7 @@ it easy to cause silent data corruption due to floating-point imprecision.
 
 We encourage libraries to carefully document which interpretation they implement.
 
-#### Len
+### Len
 
 `Len()` implies that `min_inclusive <= len(value) < max_exclusive`.
 We recommend that libraries interpret `slice` objects identically
@@ -111,7 +107,7 @@ eight elements (`Len(8, 9)`).
 Implementors: note that Len() should always have an integer value for
 `min_inclusive`, but `slice` objects can also have `start=None`.
 
-#### Timezone
+### Timezone
 
 `Timezone` can be used with a `datetime` or a `time` to express which timezones
 are allowed. `Annotated[datetime, Timezone(None)]` must be a naive datetime.
@@ -121,7 +117,7 @@ timezone string or `timezone` object such as `Timezone(timezone.utc)` or
 `Timezone("Africa/Abidjan")` to express that you only allow a specific timezone,
 though we note that this is often a symptom of fragile design.
 
-#### Predicate
+### Predicate
 
 `Predicate(func: Callable)` expresses that `func(value)` is truthy for valid values.
 Users should prefer the statically inspectable metadata above, but if you need
@@ -143,70 +139,39 @@ and then propogate or discard the resulting
 `TypeError: descriptor 'isdigit' for 'str' objects doesn't apply to a 'int' object`
 exception.  We encourage libraries to document the behaviour they choose.
 
-### Consuming and creating metadata
-
-All `annotated-types` metadata should inherit from one of `BaseMetadata` or `GroupedMetadata`, which are base classes provided by `annotated-types`.
-
-In this section we discuss how each one of these classes can be used and how to use them when consuming metadata.
-
-#### `BaseMetadata`
-
-We provide `BaseMetadata` as base class for all metadata that serves as a namespace and identifier to easily filter metadata from this package out from other metadata that may be contained in the `Annotated[...]` type annotation.
-
-If you are creating your own metadata, you _should_ inherit from `annotated_types.BaseMetadata`:
-
-```python
-from dataclasses import dataclass
-from annotated_types import BaseMetadata, GroupedMetadata
-
-@dataclass
-class Description(BaseMetadata):
-    """Description of a data type/field"""
-    description: str
-
-@dataclass
-class Pattern(BaseMetadata):
-    """Regex pattern constraint"""
-    pattern: str
-```
-
-Note that you should not inherit from `BaseMetadata` if you are creating a grouping of `BaseMetadata`.
-In that case you should inherit from `GroupedMetadata` so that the grouping itself is not considered metadata (it is a _collection_ of metadata).
-
-#### `GroupedMetadata`
+### Integrating downstream types with `GroupedMetadata`
 
 Implementers may choose to provide a convenience wrapper that groups multiple pieces of metadata.
 This can help reduce verbosity and cognitive overhead for users.
-For example, an implementer might provide a `Field` or `Meta` type that accepts keyword arguments and transforms these into low-level metadata:
+For example, an implementer like Pydantic might provide a `Field` or `Meta` type that accepts keyword arguments and transforms these into low-level metadata:
 
 ```python
 from dataclasses import dataclass
 from typing import Iterator
-from annotated_types import BaseMetadata, GroupedMetadata, Ge
+from annotated_types import GroupedMetadata, Ge
 
 @dataclass
 class Field(GroupedMetadata):
     ge: int | None = None
-    pattern: str | None = None
     description: str | None = None
 
-    def __iter__(self) -> Iterator[BaseMetadata]:
+    def __iter__(self) -> Iterator[object]:
+        # Iterating over a GroupedMetadata object should yield annotated-types
+        # constraint metadata objects which describe it as fully as possible,
+        # and may include other unknown objects too.
         if self.ge is not None:
             yield Ge(self.ge)
-        if self.pattern is not None:
-            yield Pattern(self.pattern)  # defined above
         if self.description is not None:
-            yield Description(self.description)  # defined above
+            yield Description(self.description)
 ```
 
-Note that `GroupedMetadata` and `Field` do not inherit from `BaseMetadata` and are not considered metadata in and of themselves.
-Implementers should instead check for `GroupedMetadata` and unpack it by iterating over the object to get the `BaseMetadata` objects it contains.
+Libraries consuming annotated-types constraints should check for `GroupedMetadata` and unpack it by iterating over the object and treating the results as if they had been "unpacked" in the `Annotated` type.  The same logic should be applied to the [PEP 646 `Unpack` type](https://peps.python.org/pep-0646/), so that `Annotated[T, Field(...)]`, `Annotated[T, Unpack[Field(...)]]` and `Annotated[T, *Field(...)]` are all treated consistently.
 
-Another example use case is the convenience `annotated_types.Interval` class, which unpacks itself into `Gt`, `Lt`, etc.
+Our own `annotated_types.Interval` class is a `GroupedMetadata` which unpacks itself into `Gt`, `Lt`, etc., so this is not an abstract concern.
 
-#### Consuming metadata
+### Consuming metadata
 
-We intend to not be perspcriptive as to _how_ the metadata and constraints are used, but as an example of how one might hypothetically parse constraints from types annotations see our [implementation in `test_main.py`](https://github.com/annotated-types/annotated-types/blob/f59cf6d1b5255a0fe359b93896759a180bec30ae/tests/test_main.py#L94-L103).
+We intend to not be perspcriptive as to _how_ the metadata and constraints are used, but as an example of how one might parse constraints from types annotations see our [implementation in `test_main.py`](https://github.com/annotated-types/annotated-types/blob/f59cf6d1b5255a0fe359b93896759a180bec30ae/tests/test_main.py#L94-L103).
 
 It is up to the implementer to determine how this metadata is used.
 You could use the metadata for runtime type checking, for generating schemas or to generate example data, amongst other use cases.
