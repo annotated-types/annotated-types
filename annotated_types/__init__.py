@@ -227,6 +227,7 @@ class MinLen(BaseMetadata):
 
     For more details, see ``Len()`` below.
     """
+
     min_inclusive: Annotated[int, Ge(0)]
 
 
@@ -237,6 +238,7 @@ class MaxLen(BaseMetadata):
 
     For more details, see ``Len()`` below.
     """
+
     max_exclusive: Annotated[int, Ge(0)]
 
 
