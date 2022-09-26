@@ -21,8 +21,9 @@ repos:
     types: [python]
     language: system
     pass_filenames: false
+
+- repo: https://github.com/asottile/pyupgrade
+  rev: v2.38.2
+  hooks:
   - id: pyupgrade
-    name: Pyupgrade
     entry: pyupgrade --py37-plus
-    types: [python]
-    language: system
