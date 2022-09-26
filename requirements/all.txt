@@ -1,0 +1,2 @@
+-r ./linting.txt
+-r ./testing.txt

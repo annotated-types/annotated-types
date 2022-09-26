@@ -1,6 +1,0 @@
-coverage==6.3.2
-poetry==1.2.0a2
-pytest==7.1.2
-pytest-mock==3.7.0
-pytest-sugar==0.9.4
-pre-commit==2.18.1

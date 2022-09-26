@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11.0-alpha - 3.11']
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11-dev']
 
     runs-on: ubuntu-latest
 
@@ -26,7 +26,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: set up python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -34,19 +34,19 @@ jobs:
       id: cache
       with:
         path: ${{ env.pythonLocation }}
-        key: ${{ runner.os }}-${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-${{ hashFiles('tests/requirements.txt') }}
+        key: ${{ runner.os }}-${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-${{ hashFiles('requirements/testing.txt') }}
 
-    - run: pip install -r tests/requirements.txt
+    - run: pip install -r requirements/testing.txt
       if: steps.cache.outputs.cache-hit != 'true'
 
-    - run: poetry install
+    - run: pip install .
       if: steps.cache.outputs.cache-hit != 'true'
 
     - run: make test
 
     - run: coverage xml
 
-    - uses: codecov/codecov-action@v2.1.0
+    - uses: codecov/codecov-action@v3
       with:
         file: ./coverage.xml
         env_vars: PYTHON
@@ -57,7 +57,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - uses: actions/setup-python@v2
+    - uses: actions/setup-python@v4
       with:
         python-version: '3.10'
 
@@ -67,13 +67,14 @@ jobs:
         path: |
           ${{ env.pythonLocation }}
           .mypy_cache
-        key: v2-${{ hashFiles('tests/requirements-linting.txt') }}
+        key: v2-${{ hashFiles('requirements/linting.txt') }}
 
-    - run: pip install -r tests/requirements-linting.txt
+    - run: pip install -r requirements/linting.txt
       if: steps.cache.outputs.cache-hit != 'true'
 
-    - run: make lint
-    - run: make mypy
+    - uses: pre-commit/action@v3.0.0
+      with:
+        extra_args: --all-files --verbose
 
   deploy:
     needs:
@@ -86,12 +87,25 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: set up python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - run: pip install poetry==1.2.0a2 poetry-version-plugin
+      - run: pip install -U twine build
 
-      - run: poetry publish --build
+      - name: check GITHUB_REF matches package version
+        uses: samuelcolvin/check-python-version@v3
+        id: check-python-version
+        with:
+          version_file_path: annotated_types/__init__.py
+
+      - name: build
+        run: python -m build
+
+      - run: twine check dist/*
+
+      - name: upload to pypi
+        run: twine upload dist/*
         env:
-          POETRY_PYPI_TOKEN_PYPI: ${{ secrets.pypi_token }}
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.pypi_token }}

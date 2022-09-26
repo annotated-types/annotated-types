@@ -1,24 +1,21 @@
 .DEFAULT_GOAL := all
-isort = isort annotated_types tests
-black = black annotated_types tests
+paths = annotated_types tests
 
 .PHONY: install
 install:
-	pip install -r tests/requirements.txt
-	pip install -r tests/requirements-linting.txt
-	poetry install
+	pip install -r requirements/all.txt
 	pre-commit install
 
 .PHONY: format
 format:
-	$(isort)
-	$(black)
+	isort $(paths)
+	black $(paths)
 
 .PHONY: lint
 lint:
-	flake8 --max-complexity 10 --max-line-length 120 --ignore E203,W503 annotated_types tests
-	$(isort) --check-only --df
-	$(black) --check
+	flake8 $(paths)
+	isort $(paths) --check-only --df
+	black $(paths) --check
 
 .PHONY: test
 test:
