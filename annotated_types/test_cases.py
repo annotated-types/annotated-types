@@ -91,7 +91,7 @@ def cases() -> Iterable[Case]:
 
     yield Case(Annotated[str, at.MaxLen(4)], ('', '123'), ('1234', 'x' * 10))
     yield Case(Annotated[str, at.Len(0, 4)], ('', '123'), ('1234', 'x' * 10))
-    yield Case(Annotated[str, at.MaxLen(4)], ([], ['a', 'bcdef'], ['a', 'b', 'c']), (['a'] * 4, ['b'] * 5))
+    yield Case(Annotated[List[str], at.MaxLen(4)], ([], ['a', 'bcdef'], ['a', 'b', 'c']), (['a'] * 4, ['b'] * 5))
     yield Case(Annotated[List[str], at.Len(0, 4)], ([], ['a', 'bcdef'], ['a', 'b', 'c']), (['a'] * 4, ['b'] * 5))
     yield Case(Annotated[str, 0:4], ('', '123'), ('1234', 'x' * 10))
     yield Case(Annotated[str, :4], ('', '123'), ('1234', 'x' * 10))
