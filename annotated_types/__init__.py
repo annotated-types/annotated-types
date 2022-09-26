@@ -33,6 +33,8 @@ __all__ = (
     'Le',
     'Interval',
     'MultipleOf',
+    'MinLen',
+    'MaxLen',
     'Len',
     'Timezone',
     'Predicate',
@@ -219,7 +221,27 @@ class MultipleOf(BaseMetadata):
 
 
 @dataclass(frozen=True, **SLOTS)
-class Len(BaseMetadata):
+class MinLen(BaseMetadata):
+    """
+    MinLen() implies minimum inclusive length.
+
+    For more details, see ``Len()`` below.
+    """
+    min_inclusive: Annotated[int, Ge(0)]
+
+
+@dataclass(frozen=True, **SLOTS)
+class MaxLen(BaseMetadata):
+    """
+    MaxLen() implies maximum exclusive length.
+
+    For more details, see ``Len()`` below.
+    """
+    max_exclusive: Annotated[int, Ge(0)]
+
+
+@dataclass(frozen=True, **SLOTS)
+class Len(GroupedMetadata):
     """Len() implies that ``min_inclusive <= len(value) < max_exclusive``.
 
     We also recommend that libraries interpret ``slice`` objects identically
@@ -238,6 +260,13 @@ class Len(BaseMetadata):
 
     min_inclusive: Annotated[int, Ge(0)] = 0
     max_exclusive: Optional[Annotated[int, Ge(0)]] = None
+
+    def __iter__(self) -> Iterator[BaseMetadata]:
+        """Unpack a Len into zone or more single-bounds."""
+        if self.min_inclusive > 0:
+            yield MinLen(self.min_inclusive)
+        if self.max_exclusive is not None:
+            yield MaxLen(self.max_exclusive)
 
 
 @dataclass(frozen=True, **SLOTS)
