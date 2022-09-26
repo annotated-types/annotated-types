@@ -95,7 +95,6 @@ jobs:
 
       - name: check GITHUB_REF matches package version
         uses: samuelcolvin/check-python-version@v3
-        id: check-python-version
         with:
           version_file_path: annotated_types/__init__.py
 
