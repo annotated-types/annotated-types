@@ -6,6 +6,11 @@ install:
 	pip install -r requirements/all.txt
 	pre-commit install
 
+.PHONY: generate-dependencies
+generate-dependencies:
+	pip-compile --resolver backtracking --output-file=requirements/linting.txt requirements/linting.in
+	pip-compile --resolver backtracking --output-file=requirements/testing.txt requirements/testing.in
+
 .PHONY: format
 format:
 	isort $(paths)
