@@ -1,16 +1,14 @@
-[tool.poetry]
+[project]
 name = "annotated-types"
-# version is set from annotated-types/__init__.py::__version__
-version = "0"
 description = "Reusable constraint types to use with typing.Annotated"
 authors = [
-    "Samuel Colvin <s@mulecolvin.com>",
-    "Adrian Garcia Badaracco <1755071+adriangb@users.noreply.github.com>",
-    "Zac Hatfield-Dodds <zac@zhd.dev>",
+    {name = "Samuel Colvin", email = "s@muelcolvin.com"},
+    {name = "Adrian Garcia Badaracco", email = "1755071+adriangb@users.noreply.github.com"},
+    {name = "Zac Hatfield-Dodds", email = "zac@zhd.dev"},
 ]
 readme = "README.md"
 repository = "https://github.com/annotated-types/annotated-types"
-license = "MIT"
+license = {file = "LICENSE"}
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -25,28 +23,33 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Typing :: Typed",
 ]
 
-[tool.poetry.dependencies]
-python = "^3.7.0"
-typing-extensions = {version = "^4.0.0", python = "<3.9.0"}
+requires-python = ">=3.7"
+dependencies = ["typing-extensions>=4.0.0; python_version<'3.9'"]
+dynamic = ["version"]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.poetry-version-plugin]
-source = "init"
+[tool.hatch.version]
+path = "annotated_types/__init__.py"
 
 [tool.pytest.ini_options]
 testpaths = "tests"
 filterwarnings = "error"
 
+[tool.flake8]
+max_line_length = 120
+max_complexity = 10
+ignore = ["E203", "W503"]
+
 [tool.coverage.run]
 source = ["annotated_types"]
-omit = ["annotated_types/_compat37.py", "annotated_types/_compat38.py"]
 branch = true
 
 [tool.coverage.report]
