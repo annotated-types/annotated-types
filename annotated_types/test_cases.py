@@ -80,14 +80,18 @@ def cases() -> Iterable[Case]:
 
     # lengths
 
+    yield Case(Annotated[str, at.MinLen(3)], ('123', '1234', 'x' * 10), ('', '1', '12'))
     yield Case(Annotated[str, at.Len(3)], ('123', '1234', 'x' * 10), ('', '1', '12'))
     yield Case(Annotated[str, 3:], ('123', '1234', 'x' * 10), ('', '1', '12'))
     yield Case(Annotated[str, 3:None], ('123', '1234', 'x' * 10), ('', '1', '12'))
+    yield Case(Annotated[List[int], at.MinLen(3)], ([1, 2, 3], [1, 2, 3, 4], [1] * 10), ([], [1], [1, 2]))
     yield Case(Annotated[List[int], at.Len(3)], ([1, 2, 3], [1, 2, 3, 4], [1] * 10), ([], [1], [1, 2]))
     yield Case(Annotated[List[int], 3:], ([1, 2, 3], [1, 2, 3, 4], [1] * 10), ([], [1], [1, 2]))
     yield Case(Annotated[List[int], 3:None], ([1, 2, 3], [1, 2, 3, 4], [1] * 10), ([], [1], [1, 2]))
 
+    yield Case(Annotated[str, at.MaxLen(4)], ('', '123'), ('1234', 'x' * 10))
     yield Case(Annotated[str, at.Len(0, 4)], ('', '123'), ('1234', 'x' * 10))
+    yield Case(Annotated[List[str], at.MaxLen(4)], ([], ['a', 'bcdef'], ['a', 'b', 'c']), (['a'] * 4, ['b'] * 5))
     yield Case(Annotated[List[str], at.Len(0, 4)], ([], ['a', 'bcdef'], ['a', 'b', 'c']), (['a'] * 4, ['b'] * 5))
     yield Case(Annotated[str, 0:4], ('', '123'), ('1234', 'x' * 10))
     yield Case(Annotated[str, :4], ('', '123'), ('1234', 'x' * 10))

@@ -87,9 +87,14 @@ it easy to cause silent data corruption due to floating-point imprecision.
 
 We encourage libraries to carefully document which interpretation they implement.
 
-### Len
+### MinLen, MaxLen, Len
 
 `Len()` implies that `min_inclusive <= len(value) < max_exclusive`.
+
+As well as `Len()` which can optionally include upper and lower bounds, we also
+provide `MinLen(x)` and `MaxLen(y)` which are equivalent to `Len(min_inclusive=x)` 
+and `Len(max_exclusive=y)` respectively.
+
 We recommend that libraries interpret `slice` objects identically
 to `Len()`, making all the following cases equivalent:
 
@@ -99,12 +104,13 @@ to `Len()`, making all the following cases equivalent:
 * `Annotated[list, slice(0, 10)]`
 * `Annotated[list, Len(0, 10)]`
 * `Annotated[list, Len(max_exclusive=10)]`
+* `Annotated[list, MaxLen(10)]`
 
-And of course you can describe lists of three or more elements (`Len(min_inclusive=3)`),
+And of course you can describe lists of three or more elements (`Len(min_inclusive=3)` or `MinLen(3)`),
 four, five, or six elements (`Len(4, 7)` - note exclusive-maximum!) or *exactly*
 eight elements (`Len(8, 9)`).
 
-Implementors: note that Len() should always have an integer value for
+Implementors: note that `Len()` should always have an integer value for
 `min_inclusive`, but `slice` objects can also have `start=None`.
 
 ### Timezone
@@ -167,7 +173,7 @@ class Field(GroupedMetadata):
 
 Libraries consuming annotated-types constraints should check for `GroupedMetadata` and unpack it by iterating over the object and treating the results as if they had been "unpacked" in the `Annotated` type.  The same logic should be applied to the [PEP 646 `Unpack` type](https://peps.python.org/pep-0646/), so that `Annotated[T, Field(...)]`, `Annotated[T, Unpack[Field(...)]]` and `Annotated[T, *Field(...)]` are all treated consistently.
 
-Our own `annotated_types.Interval` class is a `GroupedMetadata` which unpacks itself into `Gt`, `Lt`, etc., so this is not an abstract concern.
+Our own `annotated_types.Interval` class is a `GroupedMetadata` which unpacks itself into `Gt`, `Lt`, etc., so this is not an abstract concern.  Similarly, `annotated_types.Len` is a `GroupedMetadata` which unpacks itself into `MinLen` (optionally) and `MaxLen`.
 
 ### Consuming metadata
 

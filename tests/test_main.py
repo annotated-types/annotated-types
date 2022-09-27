@@ -43,17 +43,14 @@ def check_multiple_of(constraint: Constraint, val: Any) -> bool:
     return val % constraint.multiple_of == 0
 
 
-def check_len(constraint: Constraint, val: Any) -> bool:
-    if isinstance(constraint, slice):
-        constraint = annotated_types.Len(constraint.start or 0, constraint.stop)
-    assert isinstance(constraint, annotated_types.Len)
-    if constraint.min_inclusive is None:
-        raise TypeError
-    if len(val) < constraint.min_inclusive:
-        return False
-    if constraint.max_exclusive is not None and len(val) >= constraint.max_exclusive:
-        return False
-    return True
+def check_min_len(constraint: Constraint, val: Any) -> bool:
+    assert isinstance(constraint, annotated_types.MinLen)
+    return len(val) >= constraint.min_inclusive
+
+
+def check_max_len(constraint: Constraint, val: Any) -> bool:
+    assert isinstance(constraint, annotated_types.MaxLen)
+    return len(val) < constraint.max_exclusive
 
 
 def check_predicate(constraint: Constraint, val: Any) -> bool:
@@ -84,9 +81,9 @@ VALIDATORS: Dict[Type[Constraint], Validator] = {
     annotated_types.Le: check_le,
     annotated_types.MultipleOf: check_multiple_of,
     annotated_types.Predicate: check_predicate,
-    annotated_types.Len: check_len,
+    annotated_types.MinLen: check_min_len,
+    annotated_types.MaxLen: check_max_len,
     annotated_types.Timezone: check_timezone,
-    slice: check_len,
 }
 
 
@@ -96,10 +93,12 @@ def get_constraints(tp: type) -> Iterator[Constraint]:
     args = iter(get_args(tp))
     next(args)
     for arg in args:
-        if isinstance(arg, (annotated_types.BaseMetadata, slice)):
+        if isinstance(arg, annotated_types.BaseMetadata):
             yield arg
         elif isinstance(arg, annotated_types.GroupedMetadata):
             yield from arg
+        elif isinstance(arg, slice):
+            yield from annotated_types.Len(arg.start or 0, arg.stop)
 
 
 def is_valid(tp: type, value: Any) -> bool:
