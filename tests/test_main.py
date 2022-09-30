@@ -45,12 +45,12 @@ def check_multiple_of(constraint: Constraint, val: Any) -> bool:
 
 def check_min_len(constraint: Constraint, val: Any) -> bool:
     assert isinstance(constraint, annotated_types.MinLen)
-    return len(val) >= constraint.min_inclusive
+    return len(val) >= constraint.min_length
 
 
 def check_max_len(constraint: Constraint, val: Any) -> bool:
     assert isinstance(constraint, annotated_types.MaxLen)
-    return len(val) < constraint.max_exclusive
+    return len(val) <= constraint.max_length
 
 
 def check_predicate(constraint: Constraint, val: Any) -> bool:
