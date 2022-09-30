@@ -223,9 +223,8 @@ class MultipleOf(BaseMetadata):
 @dataclass(frozen=True, **SLOTS)
 class MinLen(BaseMetadata):
     """
-    MinLen() implies minimum inclusive length.
-
-    For more details, see ``Len()`` below.
+    MinLen() implies minimum inclusive length,
+    e.g. ``len(value) >= min_length``.
     """
 
     min_length: Annotated[int, Ge(0)]
@@ -234,9 +233,8 @@ class MinLen(BaseMetadata):
 @dataclass(frozen=True, **SLOTS)
 class MaxLen(BaseMetadata):
     """
-    MaxLen() implies maximum inclusive length.
-
-    For more details, see ``Len()`` below.
+    MaxLen() implies maximum inclusive length,
+    e.g. ``len(value) <= max_length``.
     """
 
     max_length: Annotated[int, Ge(0)]
@@ -246,6 +244,8 @@ class MaxLen(BaseMetadata):
 class Len(GroupedMetadata):
     """
     Len() implies that ``min_length <= len(value) <= max_length``.
+
+    Upper bound may be omitted or ``None`` to indicate no upper length bound.
     """
 
     min_length: Annotated[int, Ge(0)] = 0
