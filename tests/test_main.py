@@ -102,10 +102,7 @@ def get_constraints(tp: type) -> Iterator[Constraint]:
 
 
 def is_valid(tp: type, value: Any) -> bool:
-    for constraint in get_constraints(tp):
-        if not VALIDATORS[type(constraint)](constraint, value):
-            return False
-    return True
+    return all(VALIDATORS[type(constraint)](constraint, value) for constraint in get_constraints(tp))
 
 
 def extract_valid_testcases(case: Case) -> "Iterable[ParameterSet]":
