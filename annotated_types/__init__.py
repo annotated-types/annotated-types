@@ -44,7 +44,7 @@ __all__ = (
     '__version__',
 )
 
-__version__ = '0.3.1'
+__version__ = '0.4.0'
 
 
 T = TypeVar('T')
@@ -223,52 +223,40 @@ class MultipleOf(BaseMetadata):
 @dataclass(frozen=True, **SLOTS)
 class MinLen(BaseMetadata):
     """
-    MinLen() implies minimum inclusive length.
-
-    For more details, see ``Len()`` below.
+    MinLen() implies minimum inclusive length,
+    e.g. ``len(value) >= min_length``.
     """
 
-    min_inclusive: Annotated[int, Ge(0)]
+    min_length: Annotated[int, Ge(0)]
 
 
 @dataclass(frozen=True, **SLOTS)
 class MaxLen(BaseMetadata):
     """
-    MaxLen() implies maximum exclusive length.
-
-    For more details, see ``Len()`` below.
+    MaxLen() implies maximum inclusive length,
+    e.g. ``len(value) <= max_length``.
     """
 
-    max_exclusive: Annotated[int, Ge(0)]
+    max_length: Annotated[int, Ge(0)]
 
 
 @dataclass(frozen=True, **SLOTS)
 class Len(GroupedMetadata):
-    """Len() implies that ``min_inclusive <= len(value) < max_exclusive``.
+    """
+    Len() implies that ``min_length <= len(value) <= max_length``.
 
-    We also recommend that libraries interpret ``slice`` objects identically
-    to Len(), meaning that the following cases are all equivalent:
-
-    - ``Annotated[list, :10]``
-    - ``Annotated[list, 0:10]``
-    - ``Annotated[list, None:10]``
-    - ``Annotated[list, slice(0, 10)]``
-    - ``Annotated[list, Len(0, 10)]``
-    - ``Annotated[list, Len(max_exclusive=10)]``
-
-    Implementors: note that Len() should always have an integer value for
-    ``min_inclusive``, but ``slice`` objects can also have ``start=None``.
+    Upper bound may be omitted or ``None`` to indicate no upper length bound.
     """
 
-    min_inclusive: Annotated[int, Ge(0)] = 0
-    max_exclusive: Optional[Annotated[int, Ge(0)]] = None
+    min_length: Annotated[int, Ge(0)] = 0
+    max_length: Optional[Annotated[int, Ge(0)]] = None
 
     def __iter__(self) -> Iterator[BaseMetadata]:
         """Unpack a Len into zone or more single-bounds."""
-        if self.min_inclusive > 0:
-            yield MinLen(self.min_inclusive)
-        if self.max_exclusive is not None:
-            yield MaxLen(self.max_exclusive)
+        if self.min_length > 0:
+            yield MinLen(self.min_length)
+        if self.max_length is not None:
+            yield MaxLen(self.max_length)
 
 
 @dataclass(frozen=True, **SLOTS)

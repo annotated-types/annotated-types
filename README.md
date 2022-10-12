@@ -89,29 +89,30 @@ We encourage libraries to carefully document which interpretation they implement
 
 ### MinLen, MaxLen, Len
 
-`Len()` implies that `min_inclusive <= len(value) < max_exclusive`.
+`Len()` implies that `min_length <= len(value) <= max_length` - lower and upper bounds are inclusive.
 
 As well as `Len()` which can optionally include upper and lower bounds, we also
-provide `MinLen(x)` and `MaxLen(y)` which are equivalent to `Len(min_inclusive=x)` 
-and `Len(max_exclusive=y)` respectively.
+provide `MinLen(x)` and `MaxLen(y)` which are equivalent to `Len(min_length=x)`
+and `Len(max_length=y)` respectively.
 
-We recommend that libraries interpret `slice` objects identically
-to `Len()`, making all the following cases equivalent:
+`Len`, `MinLen`, and `MaxLen` may be used with any type which supports `len(value)`.
 
-* `Annotated[list, :10]`
-* `Annotated[list, 0:10]`
-* `Annotated[list, None:10]`
-* `Annotated[list, slice(0, 10)]`
-* `Annotated[list, Len(0, 10)]`
-* `Annotated[list, Len(max_exclusive=10)]`
-* `Annotated[list, MaxLen(10)]`
+Examples of usage:
 
-And of course you can describe lists of three or more elements (`Len(min_inclusive=3)` or `MinLen(3)`),
-four, five, or six elements (`Len(4, 7)` - note exclusive-maximum!) or *exactly*
-eight elements (`Len(8, 9)`).
+* `Annotated[list, MaxLen(10)]` (or `Annotated[list, Len(max_length=10))`) - list must have a length of 10 or less
+* `Annotated[str, MaxLen(10)]` - string must have a length of 10 or less
+* `Annotated[list, MinLen(3))` (or `Annotated[list, Len(min_length=3))`) - list must have a length of 3 or more
+* `Annotated[list, Len(4, 6)]` - list must have a length of 4, 5, or 6
+* `Annotated[list, Len(8, 8)]` - list must have a length of exactly 8
 
-Implementors: note that `Len()` should always have an integer value for
-`min_inclusive`, but `slice` objects can also have `start=None`.
+#### Changed in v0.4.0
+
+* `min_inclusive` has been renamed to `min_length`, no change in meaning
+* `max_exclusive` has been renamed to `max_length`, upper bound is now **inclusive** instead of **exclusive**
+* The recommendation that slices are interpreted as `Len` has been removed due to ambiguity and different semantic
+  meaning of the upper bound in slices vs. `Len`
+
+See [issue #23](https://github.com/annotated-types/annotated-types/issues/23) for discussion.
 
 ### Timezone
 
