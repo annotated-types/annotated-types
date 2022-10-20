@@ -34,10 +34,8 @@ class MyClass:
     factors: list[Annotated[int, Predicate(is_prime)]]  # Valid: 2, 3, 5, 7, 11, ...
                                                         # Invalid: 4, 8, -2, 5.0, "prime", ...
 
-    my_list: Annotated[list[int], 0:10]                 # Valid: [], [10, 20, 30, 40, 50]
+    my_list: Annotated[list[int], Len(0, 10)]           # Valid: [], [10, 20, 30, 40, 50]
                                                         # Invalid: (1, 2), ["abc"], [0] * 20
-    your_set: Annotated[set[int], Len(0, 10)]           # Valid: {1, 2, 3}, ...
-                                                        # Invalid: "Well, you get the idea!"
 ```
 
 ## Documentation
