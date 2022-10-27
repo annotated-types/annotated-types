@@ -265,7 +265,7 @@ class Timezone(BaseMetadata):
 
     ``Annotated[datetime, Timezone(None)]`` must be a naive datetime.
     ``Timezone[...]`` (the ellipsis literal) expresses that the datetime must be
-    tz-aware bug any timezone is allowed.
+    tz-aware but any timezone is allowed.
 
     You may also pass a specific timezone string or timezone object such as
     ``Timezone(timezone.utc)`` or ``Timezone("Africa/Abidjan")`` to express that
