@@ -9,6 +9,7 @@ else:
     from typing import Annotated
 
 import annotated_types as at
+from annotated_types import X
 
 
 class Case(NamedTuple):
@@ -24,7 +25,9 @@ class Case(NamedTuple):
 def cases() -> Iterable[Case]:
     # Gt, Ge, Lt, Le
     yield Case(Annotated[int, at.Gt(4)], (5, 6, 1000), (4, 0, -1))
+    yield Case(Annotated[int, X > 4], (5, 6, 1000), (4, 0, -1))
     yield Case(Annotated[float, at.Gt(0.5)], (0.6, 0.7, 0.8, 0.9), (0.5, 0.0, -0.1))
+    yield Case(Annotated[float, X > 0.5], (0.6, 0.7, 0.8, 0.9), (0.5, 0.0, -0.1))
     yield Case(
         Annotated[datetime, at.Gt(datetime(2000, 1, 1))],
         [datetime(2000, 1, 2), datetime(2000, 1, 3)],
@@ -42,7 +45,9 @@ def cases() -> Iterable[Case]:
     )
 
     yield Case(Annotated[int, at.Ge(4)], (4, 5, 6, 1000, 4), (0, -1))
+    yield Case(Annotated[int, X >= 4], (4, 5, 6, 1000, 4), (0, -1))
     yield Case(Annotated[float, at.Ge(0.5)], (0.5, 0.6, 0.7, 0.8, 0.9), (0.4, 0.0, -0.1))
+    yield Case(Annotated[float, X >= 0.5], (0.5, 0.6, 0.7, 0.8, 0.9), (0.4, 0.0, -0.1))
     yield Case(
         Annotated[datetime, at.Ge(datetime(2000, 1, 1))],
         [datetime(2000, 1, 2), datetime(2000, 1, 3)],
@@ -50,7 +55,9 @@ def cases() -> Iterable[Case]:
     )
 
     yield Case(Annotated[int, at.Lt(4)], (0, -1), (4, 5, 6, 1000, 4))
+    yield Case(Annotated[int, X < 4], (0, -1), (4, 5, 6, 1000, 4))
     yield Case(Annotated[float, at.Lt(0.5)], (0.4, 0.0, -0.1), (0.5, 0.6, 0.7, 0.8, 0.9))
+    yield Case(Annotated[float, X < 0.5], (0.4, 0.0, -0.1), (0.5, 0.6, 0.7, 0.8, 0.9))
     yield Case(
         Annotated[datetime, at.Lt(datetime(2000, 1, 1))],
         [datetime(1999, 12, 31), datetime(1999, 12, 31)],
@@ -58,7 +65,9 @@ def cases() -> Iterable[Case]:
     )
 
     yield Case(Annotated[int, at.Le(4)], (4, 0, -1), (5, 6, 1000))
+    yield Case(Annotated[int, X <= 4], (4, 0, -1), (5, 6, 1000))
     yield Case(Annotated[float, at.Le(0.5)], (0.5, 0.0, -0.1), (0.6, 0.7, 0.8, 0.9))
+    yield Case(Annotated[float, X <= 0.5], (0.5, 0.0, -0.1), (0.6, 0.7, 0.8, 0.9))
     yield Case(
         Annotated[datetime, at.Le(datetime(2000, 1, 1))],
         [datetime(2000, 1, 1), datetime(1999, 12, 31)],
@@ -67,10 +76,18 @@ def cases() -> Iterable[Case]:
 
     # Interval
     yield Case(Annotated[int, at.Interval(gt=4)], (5, 6, 1000), (4, 0, -1))
+    yield Case(Annotated[int, X > 4], (5, 6, 1000), (4, 0, -1))
     yield Case(Annotated[int, at.Interval(gt=4, lt=10)], (5, 6), (4, 10, 1000, 0, -1))
+    yield Case(Annotated[int, 4 < X < 10], (5, 6), (4, 10, 1000, 0, -1))
     yield Case(Annotated[float, at.Interval(ge=0.5, le=1)], (0.5, 0.9, 1), (0.49, 1.1))
+    yield Case(Annotated[float, 0.5 <= X <= 1], (0.5, 0.9, 1), (0.49, 1.1))
     yield Case(
         Annotated[datetime, at.Interval(gt=datetime(2000, 1, 1), le=datetime(2000, 1, 3))],
+        [datetime(2000, 1, 2), datetime(2000, 1, 3)],
+        [datetime(2000, 1, 1), datetime(2000, 1, 4)],
+    )
+    yield Case(
+        Annotated[datetime, datetime(2000, 1, 1) < X <= datetime(2000, 1, 3)],
         [datetime(2000, 1, 2), datetime(2000, 1, 3)],
         [datetime(2000, 1, 1), datetime(2000, 1, 4)],
     )
@@ -81,17 +98,23 @@ def cases() -> Iterable[Case]:
     # lengths
 
     yield Case(Annotated[str, at.MinLen(3)], ('123', '1234', 'x' * 10), ('', '1', '12'))
+    yield Case(Annotated[str, len(X) >= 3], ('123', '1234', 'x' * 10), ('', '1', '12'))
     yield Case(Annotated[str, at.Len(3)], ('123', '1234', 'x' * 10), ('', '1', '12'))
+    yield Case(Annotated[str, len(X) == 3], ('123', '1234', 'x' * 10), ('', '1', '12'))
     yield Case(Annotated[List[int], at.MinLen(3)], ([1, 2, 3], [1, 2, 3, 4], [1] * 10), ([], [1], [1, 2]))
     yield Case(Annotated[List[int], at.Len(3)], ([1, 2, 3], [1, 2, 3, 4], [1] * 10), ([], [1], [1, 2]))
 
     yield Case(Annotated[str, at.MaxLen(4)], ('', '1234'), ('12345', 'x' * 10))
+    yield Case(Annotated[str, len(X) <= 4], ('', '1234'), ('12345', 'x' * 10))
     yield Case(Annotated[str, at.Len(0, 4)], ('', '1234'), ('12345', 'x' * 10))
+    yield Case(Annotated[str, 0 <= len(X) <= 4], ('', '1234'), ('12345', 'x' * 10))
     yield Case(Annotated[List[str], at.MaxLen(4)], ([], ['a', 'bcdef'], ['a', 'b', 'c']), (['a'] * 5, ['b'] * 10))
     yield Case(Annotated[List[str], at.Len(0, 4)], ([], ['a', 'bcdef'], ['a', 'b', 'c']), (['a'] * 5, ['b'] * 10))
 
     yield Case(Annotated[str, at.Len(3, 5)], ('123', '12345'), ('', '1', '12', '123456', 'x' * 10))
+    yield Case(Annotated[str, 3 <= len(X) <= 5], ('123', '12345'), ('', '1', '12', '123456', 'x' * 10))
     yield Case(Annotated[str, at.Len(3, 3)], ('123',), ('12', '1234'))
+    yield Case(Annotated[str, 3 == len(X)], ('123',), ('12', '1234'))
 
     yield Case(Annotated[Dict[int, int], at.Len(2, 3)], [{1: 1, 2: 2}], [{}, {1: 1}, {1: 1, 2: 2, 3: 3, 4: 4}])
     yield Case(Annotated[Set[int], at.Len(2, 3)], ({1, 2}, {1, 2, 3}), (set(), {1}, {1, 2, 3, 4}))

@@ -1,5 +1,5 @@
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import timezone
 from typing import Any, Callable, Iterator, Optional, TypeVar, Union
 
@@ -205,6 +205,28 @@ class Interval(GroupedMetadata):
         if self.le is not None:
             yield Le(self.le)
 
+    def __check(self, other, which):
+        if (which == "lo" and (self.lt is not None or self.le is not None)) or (
+            which == "hi" and (self.gt is not None or self.ge is not None)
+        ):
+            raise ValueError(f"{self!r} is incompatible with `=={other!r}`")
+
+    def __lt__(self, other) -> "Interval":
+        self.__check(other, "lo")
+        return replace(self, lt=other)
+
+    def __le__(self, other) -> "Interval":
+        self.__check(other, "lo")
+        return replace(self, le=other)
+
+    def __ge__(self, other) -> "Interval":
+        self.__check(other, "hi")
+        return replace(self, ge=other)
+
+    def __gt__(self, other) -> "Interval":
+        self.__check(other, "hi")
+        return replace(self, gt=other)
+
 
 @dataclass(frozen=True, **SLOTS)
 class MultipleOf(BaseMetadata):
@@ -257,6 +279,80 @@ class Len(GroupedMetadata):
             yield MinLen(self.min_length)
         if self.max_length is not None:
             yield MaxLen(self.max_length)
+
+    def __eq__(self, other) -> "Len":
+        if type(self) == type(other):
+            return self.min_length == other.min_length and self.max_length == other.max_length
+        if not isinstance(other, int):
+            return False
+        self.__check(other)
+        return Len(min_length=other, max_length=other)
+
+    def __check(self, other, which=None):
+        if not isinstance(other, int):
+            raise TypeError(f"Length bounds must be integers, got {other!r} (type {type(other).__name__}")
+        if (which != "max" and self.min_length != 0) or (which != "min" and self.max_length is not None):
+            raise ValueError(f"{self!r} is incompatible with `=={other!r}`")
+
+    def __lt__(self, other) -> "Len":
+        self.__check(other, "min")
+        return replace(self, max_length=min(self.max_length - 1, other))
+
+    def __le__(self, other) -> "Len":
+        self.__check(other, "min")
+        return replace(self, max_length=min(self.max_length, other))
+
+    def __ge__(self, other) -> "Len":
+        self.__check(other, "max")
+        return replace(self, min_length=max(self.min_length, other))
+
+    def __gt__(self, other) -> "Len":
+        self.__check(other, "max")
+        return replace(self, min_length=max(self.min_length + 1, other))
+
+
+@dataclass(frozen=True, **KW_ONLY, **SLOTS)
+class __Magic:
+    """A magic object which can create constraints from comparisons.
+
+    Examples::
+
+        Lt(1) == X < 1
+        Ge(2) == 2 <= X
+        Len(3) == (len(X) == 3)
+
+    ...although the result will in most cases be a ``GroupedMetadata`` in order
+    to support chained
+    """
+
+    # Note: this doesn't support MultipleOf, because ``X % 3`` would be truthy
+    # if x was *not* a multiple of three, and it's hard to raise a useful error
+    # if the necessary `== 0` suffix is forgotten.
+    #
+    # Implementation: return an empty `Interval` from comparisons, and empty `Len`
+    # from __len__(), then ensure that those types return a more-constrained
+    # instance of themselves when compared.
+
+    def __lt__(self, other) -> Interval:
+        return Interval(lt=other)
+
+    def __le__(self, other) -> Interval:
+        return Interval(le=other)
+
+    def __eq__(self, other) -> Interval:
+        return Interval(le=other, ge=other)
+
+    def __ge__(self, other) -> Interval:
+        return Interval(ge=other)
+
+    def __gt__(self, other) -> Interval:
+        return Interval(gt=other)
+
+    def __len__(self) -> Len:
+        return Len()
+
+
+X = __Magic()
 
 
 @dataclass(frozen=True, **SLOTS)
