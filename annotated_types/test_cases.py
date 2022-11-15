@@ -9,7 +9,7 @@ else:
     from typing import Annotated
 
 import annotated_types as at
-from annotated_types import X
+from annotated_types import X, len_X
 
 
 class Case(NamedTuple):
@@ -98,23 +98,23 @@ def cases() -> Iterable[Case]:
     # lengths
 
     yield Case(Annotated[str, at.MinLen(3)], ('123', '1234', 'x' * 10), ('', '1', '12'))
-    yield Case(Annotated[str, len(X) >= 3], ('123', '1234', 'x' * 10), ('', '1', '12'))
+    yield Case(Annotated[str, len_X >= 3], ('123', '1234', 'x' * 10), ('', '1', '12'))
     yield Case(Annotated[str, at.Len(3)], ('123', '1234', 'x' * 10), ('', '1', '12'))
-    yield Case(Annotated[str, len(X) == 3], ('123', '1234', 'x' * 10), ('', '1', '12'))
+    yield Case(Annotated[str, len_X == 3], ('123', '1234', 'x' * 10), ('', '1', '12'))
     yield Case(Annotated[List[int], at.MinLen(3)], ([1, 2, 3], [1, 2, 3, 4], [1] * 10), ([], [1], [1, 2]))
     yield Case(Annotated[List[int], at.Len(3)], ([1, 2, 3], [1, 2, 3, 4], [1] * 10), ([], [1], [1, 2]))
 
     yield Case(Annotated[str, at.MaxLen(4)], ('', '1234'), ('12345', 'x' * 10))
-    yield Case(Annotated[str, len(X) <= 4], ('', '1234'), ('12345', 'x' * 10))
+    yield Case(Annotated[str, len_X <= 4], ('', '1234'), ('12345', 'x' * 10))
     yield Case(Annotated[str, at.Len(0, 4)], ('', '1234'), ('12345', 'x' * 10))
-    yield Case(Annotated[str, 0 <= len(X) <= 4], ('', '1234'), ('12345', 'x' * 10))
+    yield Case(Annotated[str, 0 <= len_X <= 4], ('', '1234'), ('12345', 'x' * 10))
     yield Case(Annotated[List[str], at.MaxLen(4)], ([], ['a', 'bcdef'], ['a', 'b', 'c']), (['a'] * 5, ['b'] * 10))
     yield Case(Annotated[List[str], at.Len(0, 4)], ([], ['a', 'bcdef'], ['a', 'b', 'c']), (['a'] * 5, ['b'] * 10))
 
     yield Case(Annotated[str, at.Len(3, 5)], ('123', '12345'), ('', '1', '12', '123456', 'x' * 10))
-    yield Case(Annotated[str, 3 <= len(X) <= 5], ('123', '12345'), ('', '1', '12', '123456', 'x' * 10))
+    yield Case(Annotated[str, 3 <= len_X <= 5], ('123', '12345'), ('', '1', '12', '123456', 'x' * 10))
     yield Case(Annotated[str, at.Len(3, 3)], ('123',), ('12', '1234'))
-    yield Case(Annotated[str, 3 == len(X)], ('123',), ('12', '1234'))
+    yield Case(Annotated[str, 3 == len_X], ('123',), ('12', '1234'))
 
     yield Case(Annotated[Dict[int, int], at.Len(2, 3)], [{1: 1, 2: 2}], [{}, {1: 1}, {1: 1, 2: 2, 3: 3, 4: 4}])
     yield Case(Annotated[Set[int], at.Len(2, 3)], ({1, 2}, {1, 2, 3}), (set(), {1}, {1, 2, 3, 4}))

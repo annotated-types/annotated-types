@@ -4,9 +4,9 @@ from datetime import timezone
 from typing import Any, Callable, Iterator, Optional, TypeVar, Union
 
 if sys.version_info < (3, 8):
-    from typing_extensions import Protocol
+    from typing_extensions import Literal, Protocol
 else:
-    from typing import Protocol
+    from typing import Literal, Protocol
 
 if sys.version_info < (3, 9):
     from typing_extensions import Annotated
@@ -205,25 +205,25 @@ class Interval(GroupedMetadata):
         if self.le is not None:
             yield Le(self.le)
 
-    def __check(self, other, which):
+    def __check(self, other: Any, which: Literal["lo", "hi"]):
         if (which == "lo" and (self.lt is not None or self.le is not None)) or (
             which == "hi" and (self.gt is not None or self.ge is not None)
         ):
             raise ValueError(f"{self!r} is incompatible with `=={other!r}`")
 
-    def __lt__(self, other) -> "Interval":
+    def __lt__(self, other: Any) -> "Interval":
         self.__check(other, "lo")
         return replace(self, lt=other)
 
-    def __le__(self, other) -> "Interval":
+    def __le__(self, other: Any) -> "Interval":
         self.__check(other, "lo")
         return replace(self, le=other)
 
-    def __ge__(self, other) -> "Interval":
+    def __ge__(self, other: Any) -> "Interval":
         self.__check(other, "hi")
         return replace(self, ge=other)
 
-    def __gt__(self, other) -> "Interval":
+    def __gt__(self, other: Any) -> "Interval":
         self.__check(other, "hi")
         return replace(self, gt=other)
 
@@ -283,48 +283,35 @@ class Len(GroupedMetadata):
     def __eq__(self, other) -> "Len":
         if type(self) == type(other):
             return self.min_length == other.min_length and self.max_length == other.max_length
-        if not isinstance(other, int):
-            return False
         self.__check(other)
         return Len(min_length=other, max_length=other)
 
-    def __check(self, other, which=None):
+    def __check(self, other: Any, which: Literal["min", "max", None]=None):
         if not isinstance(other, int):
             raise TypeError(f"Length bounds must be integers, got {other!r} (type {type(other).__name__}")
         if (which != "max" and self.min_length != 0) or (which != "min" and self.max_length is not None):
             raise ValueError(f"{self!r} is incompatible with `=={other!r}`")
 
-    def __lt__(self, other) -> "Len":
-        self.__check(other, "min")
+    def __lt__(self, other: int) -> "Len":
+        self.__check(other, "max")
         return replace(self, max_length=min(self.max_length - 1, other))
 
-    def __le__(self, other) -> "Len":
-        self.__check(other, "min")
+    def __le__(self, other: int) -> "Len":
+        self.__check(other, "max")
         return replace(self, max_length=min(self.max_length, other))
 
-    def __ge__(self, other) -> "Len":
-        self.__check(other, "max")
+    def __ge__(self, other: int) -> "Len":
+        self.__check(other, "min")
         return replace(self, min_length=max(self.min_length, other))
 
-    def __gt__(self, other) -> "Len":
-        self.__check(other, "max")
+    def __gt__(self, other: int) -> "Len":
+        self.__check(other, "min")
         return replace(self, min_length=max(self.min_length + 1, other))
 
 
 @dataclass(frozen=True, **KW_ONLY, **SLOTS)
 class __Magic:
-    """A magic object which can create constraints from comparisons.
-
-    Examples::
-
-        Lt(1) == X < 1
-        Ge(2) == 2 <= X
-        Len(3) == (len(X) == 3)
-
-    ...although the result will in most cases be a ``GroupedMetadata`` in order
-    to support chained
-    """
-
+    """A magic object which can create interval constraints from comparisons."""
     # Note: this doesn't support MultipleOf, because ``X % 3`` would be truthy
     # if x was *not* a multiple of three, and it's hard to raise a useful error
     # if the necessary `== 0` suffix is forgotten.
@@ -333,26 +320,54 @@ class __Magic:
     # from __len__(), then ensure that those types return a more-constrained
     # instance of themselves when compared.
 
-    def __lt__(self, other) -> Interval:
+    def __lt__(self, other: Any) -> Interval:
         return Interval(lt=other)
 
-    def __le__(self, other) -> Interval:
+    def __le__(self, other: Any) -> Interval:
         return Interval(le=other)
 
-    def __eq__(self, other) -> Interval:
+    def __eq__(self, other: Any) -> Interval:
         return Interval(le=other, ge=other)
 
-    def __ge__(self, other) -> Interval:
+    def __ge__(self, other: Any) -> Interval:
         return Interval(ge=other)
 
-    def __gt__(self, other) -> Interval:
+    def __gt__(self, other: Any) -> Interval:
         return Interval(gt=other)
 
-    def __len__(self) -> Len:
-        return Len()
+@dataclass(frozen=True, **KW_ONLY, **SLOTS)
+class __LenMagic:
+    """A magic object which can create length constraints from comparisons."""
+
+    def __check(self, other: int):
+        if not isinstance(other, int):
+            raise TypeError(f"Length bounds must be integers, got {other!r} (type {type(other).__name__}")
+
+    def __lt__(self, other: int) -> Len:
+        self.__check(other)
+        return Len(max_length=other-1)
+
+    def __le__(self, other: int) -> Len:
+        self.__check(other)
+        return Len(max_length=other)
+
+    def __eq__(self, other: int) -> Len:
+        if type(self) == type(other):
+            return super().__eq__(other)
+        self.__check(other)
+        return Len(min_length=other, max_length=other)
+
+    def __ge__(self, other: int) -> Len:
+        self.__check(other)
+        return Len(min_length=other)
+
+    def __gt__(self, other: int) -> Len:
+        self.__check(other)
+        return Len(min_length=other+1)
 
 
 X = __Magic()
+len_X = __LenMagic()
 
 
 @dataclass(frozen=True, **SLOTS)
