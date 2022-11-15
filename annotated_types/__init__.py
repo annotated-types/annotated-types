@@ -205,7 +205,7 @@ class Interval(GroupedMetadata):
         if self.le is not None:
             yield Le(self.le)
 
-    def __check(self, other: Any, which: Literal["lo", "hi"]):
+    def __check(self, other: Any, which: Literal["lo", "hi"]) -> None:
         if (which == "lo" and (self.lt is not None or self.le is not None)) or (
             which == "hi" and (self.gt is not None or self.ge is not None)
         ):
@@ -280,13 +280,7 @@ class Len(GroupedMetadata):
         if self.max_length is not None:
             yield MaxLen(self.max_length)
 
-    def __eq__(self, other) -> "Len":
-        if type(self) == type(other):
-            return self.min_length == other.min_length and self.max_length == other.max_length
-        self.__check(other)
-        return Len(min_length=other, max_length=other)
-
-    def __check(self, other: Any, which: Literal["min", "max", None]=None):
+    def __check(self, other: Any, which: Literal["min", "max", None] = None):
         if not isinstance(other, int):
             raise TypeError(f"Length bounds must be integers, got {other!r} (type {type(other).__name__}")
         if (which != "max" and self.min_length != 0) or (which != "min" and self.max_length is not None):
@@ -294,7 +288,7 @@ class Len(GroupedMetadata):
 
     def __lt__(self, other: int) -> "Len":
         self.__check(other, "max")
-        return replace(self, max_length=min(self.max_length - 1, other))
+        return replace(self, max_length=min(self.max_length, other - 1))
 
     def __le__(self, other: int) -> "Len":
         self.__check(other, "max")
@@ -306,12 +300,13 @@ class Len(GroupedMetadata):
 
     def __gt__(self, other: int) -> "Len":
         self.__check(other, "min")
-        return replace(self, min_length=max(self.min_length + 1, other))
+        return replace(self, min_length=max(self.min_length, other + 1))
 
 
 @dataclass(frozen=True, **KW_ONLY, **SLOTS)
 class __Magic:
     """A magic object which can create interval constraints from comparisons."""
+
     # Note: this doesn't support MultipleOf, because ``X % 3`` would be truthy
     # if x was *not* a multiple of three, and it's hard to raise a useful error
     # if the necessary `== 0` suffix is forgotten.
@@ -327,7 +322,10 @@ class __Magic:
         return Interval(le=other)
 
     def __eq__(self, other: Any) -> Interval:
-        return Interval(le=other, ge=other)
+        if type(self) == type(other):
+            return super().__eq__(other)  # type: ignore
+        # Mypy really wants `==` comparisons to return a boolean, but magic is the point!
+        return Interval(le=other, ge=other)  # type: ignore
 
     def __ge__(self, other: Any) -> Interval:
         return Interval(ge=other)
@@ -335,27 +333,29 @@ class __Magic:
     def __gt__(self, other: Any) -> Interval:
         return Interval(gt=other)
 
+
 @dataclass(frozen=True, **KW_ONLY, **SLOTS)
 class __LenMagic:
     """A magic object which can create length constraints from comparisons."""
 
-    def __check(self, other: int):
+    def __check(self, other: Any) -> None:
         if not isinstance(other, int):
             raise TypeError(f"Length bounds must be integers, got {other!r} (type {type(other).__name__}")
 
     def __lt__(self, other: int) -> Len:
         self.__check(other)
-        return Len(max_length=other-1)
+        return Len(max_length=other - 1)
 
     def __le__(self, other: int) -> Len:
         self.__check(other)
         return Len(max_length=other)
 
-    def __eq__(self, other: int) -> Len:
+    def __eq__(self, other: object) -> Len:
         if type(self) == type(other):
-            return super().__eq__(other)
+            return super().__eq__(other)  # type: ignore
         self.__check(other)
-        return Len(min_length=other, max_length=other)
+        # Mypy really wants `==` comparisons to return a boolean, but magic is the point!
+        return Len(min_length=other, max_length=other)  # type: ignore
 
     def __ge__(self, other: int) -> Len:
         self.__check(other)
@@ -363,7 +363,7 @@ class __LenMagic:
 
     def __gt__(self, other: int) -> Len:
         self.__check(other)
-        return Len(min_length=other+1)
+        return Len(min_length=other + 1)
 
 
 X = __Magic()
