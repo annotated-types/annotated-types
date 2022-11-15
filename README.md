@@ -12,7 +12,7 @@ logic for `x`.
 
 This package provides metadata objects which can be used to represent common
 constraints such as upper and lower bounds on scalar values and collection sizes,
-a `Predicate` marker for runtime checks, and [non-normative](https://developer.mozilla.org/en-US/docs/Glossary/non-normative)
+a `Predicate` marker for runtime checks, and
 descriptions of how we intend these metadata to be interpreted. In some cases,
 we also note alternative representations which do not require this package.
 
@@ -52,7 +52,6 @@ Express inclusive and/or exclusive bounds on orderable values - which may be num
 dates, times, strings, sets, etc. Note that the boundary value need not be of the
 same type that was annotated, so long as they can be compared: `Annotated[int, Gt(1.5)]`
 is fine, for example, and implies that the value is an integer x such that `x > 1.5`.
-No interpretation is specified for special values such as `nan`.
 
 We suggest that implementors may also interpret `functools.partial(operator.le, 1.5)`
 as being equivalent to `Gt(1.5)`, for users who wish to avoid a runtime dependency on
@@ -130,12 +129,12 @@ the full power and flexibility of arbitrary runtime predicates... here it is.
 
 We provide a few predefined predicates for common string constraints:
 `IsLower = Predicate(str.islower)`, `IsUpper = Predicate(str.isupper)`, and
-`IsDigit = Predicate(str.isdigit)`. Users are encouraged to use methods which
-can be given special handling, and avoid indirection like `lambda s: s.lower()`.
-
+`IsDigit = Predicate(str.isdigit)`.
 Some libraries might have special logic to handle known or understandable predicates,
 for example by checking for `str.isdigit` and using its presence to both call custom
 logic to enforce digit-only strings, and customise some generated external schema.
+Users are therefore encouraged to avoid indirection like `lambda s: s.lower()`, in
+favor of introspectable methods such as `str.lower` or `re.compile("pattern").search`.
 
 We do not specify what behaviour should be expected for predicates that raise
 an exception.  For example `Annotated[int, Predicate(str.isdigit)]` might silently
