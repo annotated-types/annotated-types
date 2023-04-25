@@ -307,3 +307,13 @@ LowerCase = Annotated[StrType, Predicate(str.islower)]
 UpperCase = Annotated[StrType, Predicate(str.isupper)]
 IsDigits = Annotated[StrType, Predicate(str.isdigit)]
 IsAscii = Annotated[StrType, Predicate(str.isascii)]
+
+
+@dataclass(**SLOTS)
+class Deprecate(BaseMetadata):
+    """Marks a parameter or field as deprecated"""
+
+    message: str
+
+
+Deprecated = Annotated[T, Deprecate(message='')]
