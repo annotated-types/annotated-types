@@ -3,17 +3,15 @@ from dataclasses import dataclass
 from datetime import timezone
 from typing import TYPE_CHECKING, Any, Callable, Iterator, Optional, TypeVar, Union
 
-from typing_extensions import Literal
-
 if sys.version_info < (3, 8):
     from typing_extensions import Protocol, runtime_checkable
 else:
     from typing import Protocol, runtime_checkable
 
 if sys.version_info < (3, 9):
-    from typing_extensions import Annotated
+    from typing_extensions import Annotated, Literal
 else:
-    from typing import Annotated
+    from typing import Annotated, Literal
 
 if sys.version_info < (3, 10):
     EllipsisType = type(Ellipsis)
