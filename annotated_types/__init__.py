@@ -1,17 +1,17 @@
 import sys
 from dataclasses import dataclass
 from datetime import timezone
-from typing import TYPE_CHECKING, Any, Callable, Iterator, Optional, TypeVar, Union
+from typing import Any, Callable, Iterator, Optional, TypeVar, Union
 
 if sys.version_info < (3, 8):
-    from typing_extensions import Protocol, runtime_checkable
+    from typing_extensions import Protocol
 else:
-    from typing import Protocol, runtime_checkable
+    from typing import Protocol
 
 if sys.version_info < (3, 9):
-    from typing_extensions import Annotated, Literal
+    from typing_extensions import Annotated
 else:
-    from typing import Annotated, Literal
+    from typing import Annotated
 
 if sys.version_info < (3, 10):
     EllipsisType = type(Ellipsis)
@@ -139,8 +139,7 @@ class Le(BaseMetadata):
     le: SupportsLe
 
 
-@runtime_checkable
-class GroupedMetadata(Protocol):
+class GroupedMetadata:
     """A grouping of multiple BaseMetadata objects.
 
     `GroupedMetadata` on its own is not metadata and has no meaning.
@@ -171,24 +170,15 @@ class GroupedMetadata(Protocol):
     - `Annotated[int, *Field(...)]` (PEP-646)
     """  # noqa: trailing-whitespace
 
-    @property
-    def __is_annotated_types_grouped_metadata__(self) -> Literal[True]:
-        return True
+    __slots__ = ()
+
+    def __init_subclass__(cls, *args: Any, **kwargs: Any) -> None:
+        super().__init_subclass__(*args, **kwargs)
+        if cls.__iter__ is GroupedMetadata.__iter__:
+            raise TypeError("Can't subclass GroupedMetadata without implementing __iter__")
 
     def __iter__(self) -> Iterator[BaseMetadata]:
-        ...
-
-    if not TYPE_CHECKING:
-        __slots__ = ()  # allow subclasses to use slots
-
-        def __init_subclass__(cls, *args: Any, **kwargs: Any) -> None:
-            # Basic ABC like functionality without the complexity of an ABC
-            super().__init_subclass__(*args, **kwargs)
-            if cls.__iter__ is GroupedMetadata.__iter__:
-                raise TypeError("Can't subclass GroupedMetadata without implementing __iter__")
-
-        def __iter__(self) -> Iterator[BaseMetadata]:  # noqa: F811
-            raise NotImplementedError  # more helpful than "None has no attribute..." type errors
+        raise NotImplementedError
 
 
 @dataclass(frozen=True, **KW_ONLY, **SLOTS)
