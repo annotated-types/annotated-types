@@ -121,12 +121,12 @@ def extract_invalid_testcases(case: Case) -> "Iterable[ParameterSet]":
 @pytest.mark.parametrize(
     "annotation, example", [testcase for case in cases() for testcase in extract_valid_testcases(case)]
 )
-def test_valid_cases(annotation: type, example: Any):
+def test_valid_cases(annotation: type, example: Any) -> None:
     assert is_valid(annotation, example) is True
 
 
 @pytest.mark.parametrize(
     "annotation, example", [testcase for case in cases() for testcase in extract_invalid_testcases(case)]
 )
-def test_invalid_cases(annotation: type, example: Any):
+def test_invalid_cases(annotation: type, example: Any) -> None:
     assert is_valid(annotation, example) is False
