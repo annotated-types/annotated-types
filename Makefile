@@ -33,7 +33,7 @@ testcov: test
 
 .PHONY: mypy
 mypy:
-	mypy annotated_types
+	mypy annotated_types tests
 
 .PHONY: all
 all: lint mypy testcov
