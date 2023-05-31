@@ -4,3 +4,4 @@ flake8-pyproject
 isort[colors]
 mypy
 pre-commit
+pytest
