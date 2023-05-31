@@ -143,6 +143,27 @@ and then propogate or discard the resulting
 `TypeError: descriptor 'isdigit' for 'str' objects doesn't apply to a 'int' object`
 exception.  We encourage libraries to document the behaviour they choose.
 
+### Deprecated
+
+This can be used to mark parameters and fields as deprecated.
+
+```python
+from dataclasses import dataclass
+
+from annotated_types import Deprecated
+
+
+def f(x: int, y: int, z: Deprecated[int]) -> int:
+    ...
+
+
+class Foo:
+    x: int
+    y: Deprecated[int]
+```
+
+Implementers can use this to emit warnings or mark a field as deprecated in schema.
+
 ### Integrating downstream types with `GroupedMetadata`
 
 Implementers may choose to provide a convenience wrapper that groups multiple pieces of metadata.
