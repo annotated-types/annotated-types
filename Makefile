@@ -8,8 +8,7 @@ install:
 
 .PHONY: generate-dependencies
 generate-dependencies:
-	pip-compile --resolver backtracking --output-file=requirements/linting.txt requirements/linting.in
-	pip-compile --resolver backtracking --output-file=requirements/testing.txt requirements/testing.in
+	pip-compile --output-file=requirements/all.txt --resolver=backtracking requirements/all.in
 
 .PHONY: format
 format:
