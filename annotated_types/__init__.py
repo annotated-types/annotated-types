@@ -329,14 +329,40 @@ class Not:
 _StrType = TypeVar("_StrType", bound=str)
 
 LowerCase = Annotated[_StrType, Predicate(str.islower)]
+"""
+Return True if the string is a lowercase string, False otherwise.
+
+A string is lowercase if all cased characters in the string are lowercase and there is at least one cased character in the string.
+"""  # noqa: E501
 UpperCase = Annotated[_StrType, Predicate(str.isupper)]
+"""
+Return True if the string is an uppercase string, False otherwise.
+
+A string is uppercase if all cased characters in the string are uppercase and there is at least one cased character in the string.
+"""  # noqa: E501
 IsDigits = Annotated[_StrType, Predicate(str.isdigit)]
+"""
+Return True if the string is a digit string, False otherwise.
+
+A string is a digit string if all characters in the string are digits and there is at least one character in the string.
+"""  # noqa: E501
 IsAscii = Annotated[_StrType, Predicate(str.isascii)]
+"""
+Return True if all characters in the string are ASCII, False otherwise.
+
+ASCII characters have code points in the range U+0000-U+007F. Empty string is ASCII too.
+"""
 
 _NumericType = TypeVar('_NumericType', bound=Union[SupportsFloat, SupportsIndex])
 IsFinite = Annotated[_NumericType, Predicate(math.isfinite)]
+"""Return True if x is neither an infinity nor a NaN, and False otherwise."""
 IsNotFinite = Annotated[_NumericType, Predicate(Not(math.isfinite))]
+"""Return True if x is one of infinity or NaN, and False otherwise"""
 IsNan = Annotated[_NumericType, Predicate(math.isnan)]
+"""Return True if x is a NaN (not a number), and False otherwise."""
 IsNotNan = Annotated[_NumericType, Predicate(Not(math.isnan))]
+"""Return True if x is anything but NaN (not a number), and False otherwise."""
 IsInfinite = Annotated[_NumericType, Predicate(math.isinf)]
+"""Return True if x is a positive or negative infinity, and False otherwise."""
 IsNotInfinite = Annotated[_NumericType, Predicate(Not(math.isinf))]
+"""Return True if x is neither a positive or negative infinity, and False otherwise."""
