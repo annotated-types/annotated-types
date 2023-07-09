@@ -43,6 +43,11 @@ __all__ = (
     'UpperCase',
     'IsDigits',
     'IsFinite',
+    'IsNotFinite',
+    'IsNan',
+    'IsNotNan',
+    'IsInfinite',
+    'IsNotInfinite',
     '__version__',
 )
 
@@ -313,6 +318,14 @@ class Predicate(BaseMetadata):
     func: Callable[[Any], bool]
 
 
+@dataclass
+class Not:
+    func: Callable[[Any], bool]
+
+    def __call__(self, __v: Any) -> bool:
+        return not self.func(__v)
+
+
 _StrType = TypeVar("_StrType", bound=str)
 
 LowerCase = Annotated[_StrType, Predicate(str.islower)]
@@ -322,3 +335,8 @@ IsAscii = Annotated[_StrType, Predicate(str.isascii)]
 
 _NumericType = TypeVar('_NumericType', bound=Union[SupportsFloat, SupportsIndex])
 IsFinite = Annotated[_NumericType, Predicate(math.isfinite)]
+IsNotFinite = Annotated[_NumericType, Predicate(Not(math.isfinite))]
+IsNan = Annotated[_NumericType, Predicate(math.isnan)]
+IsNotNan = Annotated[_NumericType, Predicate(Not(math.isnan))]
+IsInfinite = Annotated[_NumericType, Predicate(math.isinf)]
+IsNotInfinite = Annotated[_NumericType, Predicate(Not(math.isinf))]
