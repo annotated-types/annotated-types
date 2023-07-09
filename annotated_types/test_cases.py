@@ -132,7 +132,9 @@ def cases() -> Iterable[Case]:
     yield Case(at.IsNotNan[float], [1.23, math.inf], [math.nan])
     yield Case(at.IsInfinite[float], [math.inf], [math.nan, 1.23])
     yield Case(at.IsNotInfinite[float], [math.nan, 1.23], [math.inf])
-    yield Case(at.IsInfinite[at.IsNotNan[float]], [1.23], [math.nan, math.inf])
+
+    # check stacked predicates
+    yield Case(at.IsInfinite[Annotated[float, at.Predicate(lambda x: x > 0)]], [math.inf], [-math.inf, 1.23, math.nan])
 
     # custom GroupedMetadata
     class MyCustomGroupedMetadata(at.GroupedMetadata):
