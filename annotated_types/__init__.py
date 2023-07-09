@@ -42,6 +42,7 @@ __all__ = (
     'LowerCase',
     'UpperCase',
     'IsDigits',
+    'IsFinite',
     '__version__',
 )
 
