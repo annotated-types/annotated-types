@@ -19,7 +19,7 @@ def test_subclass_without_implementing_iter() -> None:
 
     class Foo2(GroupedMetadata):
         def __iter__(self) -> Iterator[BaseMetadata]:
-            return super().__iter__()
+            raise NotImplementedError
 
     with pytest.raises(NotImplementedError):
         for _ in Foo2():
