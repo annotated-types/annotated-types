@@ -1,3 +1,4 @@
+import math
 import sys
 from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal
@@ -124,6 +125,8 @@ def cases() -> Iterable[Case]:
     yield Case(at.IsAscii[str], ['123', 'foo bar'], ['£100', '😊', 'whatever 👀'])
 
     yield Case(Annotated[int, at.Predicate(lambda x: x % 2 == 0)], [0, 2, 4], [1, 3, 5])
+
+    yield Case(at.IsFinite[float], [1.23], [math.nan, math.inf, -math.inf])
 
     # custom GroupedMetadata
     class MyCustomGroupedMetadata(at.GroupedMetadata):

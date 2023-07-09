@@ -1,7 +1,8 @@
+import math
 import sys
 from dataclasses import dataclass
 from datetime import timezone
-from typing import TYPE_CHECKING, Any, Callable, Iterator, Optional, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Callable, Iterator, Optional, SupportsFloat, SupportsIndex, TypeVar, Union
 
 if sys.version_info < (3, 8):
     from typing_extensions import Protocol, runtime_checkable
@@ -311,9 +312,12 @@ class Predicate(BaseMetadata):
     func: Callable[[Any], bool]
 
 
-StrType = TypeVar("StrType", bound=str)
+_StrType = TypeVar("_StrType", bound=str)
 
-LowerCase = Annotated[StrType, Predicate(str.islower)]
-UpperCase = Annotated[StrType, Predicate(str.isupper)]
-IsDigits = Annotated[StrType, Predicate(str.isdigit)]
-IsAscii = Annotated[StrType, Predicate(str.isascii)]
+LowerCase = Annotated[_StrType, Predicate(str.islower)]
+UpperCase = Annotated[_StrType, Predicate(str.isupper)]
+IsDigits = Annotated[_StrType, Predicate(str.isdigit)]
+IsAscii = Annotated[_StrType, Predicate(str.isascii)]
+
+_NumericType = TypeVar('_NumericType', bound=Union[SupportsFloat, SupportsIndex])
+IsFinite = Annotated[_NumericType, Predicate(math.isfinite)]

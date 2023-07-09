@@ -128,8 +128,10 @@ Users should prefer the statically inspectable metadata above, but if you need
 the full power and flexibility of arbitrary runtime predicates... here it is.
 
 We provide a few predefined predicates for common string constraints:
-`IsLower = Predicate(str.islower)`, `IsUpper = Predicate(str.isupper)`, and
-`IsDigit = Predicate(str.isdigit)`.
+- `IsLower = Predicate(str.islower)`
+- `IsUpper = Predicate(str.isupper)`
+- `IsDigit = Predicate(str.isdigit)`
+- `IsFinite = Predicate(math.isfinite)`
 Some libraries might have special logic to handle known or understandable predicates,
 for example by checking for `str.isdigit` and using its presence to both call custom
 logic to enforce digit-only strings, and customise some generated external schema.
