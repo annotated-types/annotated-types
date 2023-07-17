@@ -128,15 +128,24 @@ Users should prefer the statically inspectable metadata above, but if you need
 the full power and flexibility of arbitrary runtime predicates... here it is.
 
 We provide a few predefined predicates for common string constraints:
-- `IsLower = Predicate(str.islower)`
-- `IsUpper = Predicate(str.isupper)`
-- `IsDigit = Predicate(str.isdigit)`
-- `IsFinite = Predicate(math.isfinite)`
+
+* `IsLower = Predicate(str.islower)`
+* `IsUpper = Predicate(str.isupper)`
+* `IsDigit = Predicate(str.isdigit)`
+* `IsFinite = Predicate(math.isfinite)`
+* `IsNotFinite = Predicate(Not(math.isfinite))`
+* `IsNan = Predicate(math.isnan)`
+* `IsNotNan = Predicate(Not(math.isnan))`
+* `IsInfinite = Predicate(math.isinf)`
+* `IsNotInfinite = Predicate(Not(math.isinf))`
+
 Some libraries might have special logic to handle known or understandable predicates,
 for example by checking for `str.isdigit` and using its presence to both call custom
 logic to enforce digit-only strings, and customise some generated external schema.
 Users are therefore encouraged to avoid indirection like `lambda s: s.lower()`, in
 favor of introspectable methods such as `str.lower` or `re.compile("pattern").search`.
+
+To enable basic negation of commonly used predicates like `math.isnan` without introducing introspection that makes it impossible for implementers to introspect the predicate we provide a `Not` wrapper that simply negates the predicate in an introspectable manner. Several of the predicates listed above are created in this manner.
 
 We do not specify what behaviour should be expected for predicates that raise
 an exception.  For example `Annotated[int, Predicate(str.isdigit)]` might silently

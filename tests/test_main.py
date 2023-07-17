@@ -55,6 +55,11 @@ def check_max_len(constraint: Constraint, val: Any) -> bool:
 
 def check_predicate(constraint: Constraint, val: Any) -> bool:
     assert isinstance(constraint, annotated_types.Predicate)
+    # this is a relatively pointless branch since Not is itself callable
+    # but it serves to demonstrate that Not can be introspected
+    # and the wrapped predicate can be extracted / matched
+    if isinstance(constraint.func, annotated_types.Not):
+        return not constraint.func.func(val)
     return constraint.func(val)
 
 
