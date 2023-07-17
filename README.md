@@ -144,6 +144,7 @@ for example by checking for `str.isdigit` and using its presence to both call cu
 logic to enforce digit-only strings, and customise some generated external schema.
 Users are therefore encouraged to avoid indirection like `lambda s: s.lower()`, in
 favor of introspectable methods such as `str.lower` or `re.compile("pattern").search`.
+
 To enable basic negation of commonly used predicates like `math.isnan` without introducing introspection that makes it impossible for implementers to introspect the predicate we provide a `Not` wrapper that simply negates the predicate in an introspectable manner. Several of the predicates listed above are created in this manner.
 
 We do not specify what behaviour should be expected for predicates that raise
