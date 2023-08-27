@@ -48,6 +48,8 @@ __all__ = (
     'IsNotNan',
     'IsInfinite',
     'IsNotInfinite',
+    'doc',
+    'DocInfo',
     '__version__',
 )
 
@@ -366,3 +368,29 @@ IsInfinite = Annotated[_NumericType, Predicate(math.isinf)]
 """Return True if x is a positive or negative infinity, and False otherwise."""
 IsNotInfinite = Annotated[_NumericType, Predicate(Not(math.isinf))]
 """Return True if x is neither a positive or negative infinity, and False otherwise."""
+
+try:
+    from typing_extensions import DocInfo, doc  # type: ignore [attr-defined]
+except ImportError:
+
+    @dataclass(frozen=True, **SLOTS)
+    class DocInfo:  # type: ignore [no-redef]
+        """ "
+        The return value of doc(), mainly to be used by tools that want to extract the
+        Annotated documentation at runtime.
+        """
+
+        documentation: str
+        """The documentation string passed to doc()."""
+
+    def doc(
+        documentation: str,
+    ) -> DocInfo:
+        """
+        Add documentation to a type annotation inside of Annotated.
+
+        For example:
+
+        >>> def hi(name: Annotated[int, doc("The name of the user")]) -> None: ...
+        """
+        return DocInfo(documentation)

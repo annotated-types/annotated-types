@@ -154,6 +154,16 @@ and then propogate or discard the resulting
 `TypeError: descriptor 'isdigit' for 'str' objects doesn't apply to a 'int' object`
 exception.  We encourage libraries to document the behaviour they choose.
 
+### Doc
+
+`doc()` can be used to add documentation information in `Annotated`, for function and method parameters, variables, class attributes, return types, and any place where `Annotated` can be used.
+
+It expects a value that can be statically analyzed, as the main use case is for static analysis, editors, documentation generators, and similar tools.
+
+It returns a `DocInfo` class with a single attribute `documentation` containing the value passed to `doc()`.
+
+This is the early adopter's alternative form of the [`typing-doc` proposal](https://github.com/tiangolo/fastapi/blob/typing-doc/typing_doc.md).
+
 ### Integrating downstream types with `GroupedMetadata`
 
 Implementers may choose to provide a convenience wrapper that groups multiple pieces of metadata.
