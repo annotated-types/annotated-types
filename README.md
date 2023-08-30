@@ -198,7 +198,7 @@ Our own `annotated_types.Interval` class is a `GroupedMetadata` which unpacks it
 
 ### Consuming metadata
 
-We intend to not be perspcriptive as to _how_ the metadata and constraints are used, but as an example of how one might parse constraints from types annotations see our [implementation in `test_main.py`](https://github.com/annotated-types/annotated-types/blob/f59cf6d1b5255a0fe359b93896759a180bec30ae/tests/test_main.py#L94-L103).
+We intend to not be prescriptive as to _how_ the metadata and constraints are used, but as an example of how one might parse constraints from types annotations see our [implementation in `test_main.py`](https://github.com/annotated-types/annotated-types/blob/f59cf6d1b5255a0fe359b93896759a180bec30ae/tests/test_main.py#L94-L103).
 
 It is up to the implementer to determine how this metadata is used.
 You could use the metadata for runtime type checking, for generating schemas or to generate example data, amongst other use cases.
