@@ -121,6 +121,11 @@ timezone string or [`tzinfo`](https://docs.python.org/3/library/datetime.html#tz
 object such as `Timezone(timezone.utc)` or `Timezone("Africa/Abidjan")` to express that you only
 allow a specific timezone, though we note that this is often a symptom of fragile design.
 
+#### Changed in v0.x.x
+
+* `Timezone` accepts [`tzinfo`](https://docs.python.org/3/library/datetime.html#tzinfo-objects) objects instead of
+  `timezone`, extending compatibility to [`zoneinfo`](https://docs.python.org/3/library/zoneinfo.html) and third party libraries.
+
 ### Predicate
 
 `Predicate(func: Callable)` expresses that `func(value)` is truthy for valid values.
