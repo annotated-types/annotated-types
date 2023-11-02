@@ -1,7 +1,7 @@
 import math
 import sys
 from dataclasses import dataclass
-from datetime import timezone
+from datetime import tzinfo
 from typing import TYPE_CHECKING, Any, Callable, Iterator, Optional, SupportsFloat, SupportsIndex, TypeVar, Union
 
 if sys.version_info < (3, 8):
@@ -286,13 +286,13 @@ class Timezone(BaseMetadata):
     ``Timezone[...]`` (the ellipsis literal) expresses that the datetime must be
     tz-aware but any timezone is allowed.
 
-    You may also pass a specific timezone string or timezone object such as
+    You may also pass a specific timezone string or tzinfo object such as
     ``Timezone(timezone.utc)`` or ``Timezone("Africa/Abidjan")`` to express that
     you only allow a specific timezone, though we note that this is often
     a symptom of poor design.
     """
 
-    tz: Union[str, timezone, EllipsisType, None]
+    tz: Union[str, tzinfo, EllipsisType, None]
 
 
 @dataclass(frozen=True, **SLOTS)
