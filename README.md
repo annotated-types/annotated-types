@@ -117,9 +117,9 @@ See [issue #23](https://github.com/annotated-types/annotated-types/issues/23) fo
 are allowed. `Annotated[datetime, Timezone(None)]` must be a naive datetime.
 `Timezone[...]` ([literal ellipsis](https://docs.python.org/3/library/constants.html#Ellipsis))
 expresses that any timezone-aware datetime is allowed. You may also pass a specific
-timezone string or `timezone` object such as `Timezone(timezone.utc)` or
-`Timezone("Africa/Abidjan")` to express that you only allow a specific timezone,
-though we note that this is often a symptom of fragile design.
+timezone string or [`tzinfo`](https://docs.python.org/3/library/datetime.html#tzinfo-objects)
+object such as `Timezone(timezone.utc)` or `Timezone("Africa/Abidjan")` to express that you only
+allow a specific timezone, though we note that this is often a symptom of fragile design.
 
 ### Predicate
 
