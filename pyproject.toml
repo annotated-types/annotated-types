@@ -2,8 +2,8 @@
 name = "annotated-types"
 description = "Reusable constraint types to use with typing.Annotated"
 authors = [
-    {name = "Samuel Colvin", email = "s@muelcolvin.com"},
     {name = "Adrian Garcia Badaracco", email = "1755071+adriangb@users.noreply.github.com"},
+    {name = "Samuel Colvin", email = "s@muelcolvin.com"},
     {name = "Zac Hatfield-Dodds", email = "zac@zhd.dev"},
 ]
 readme = "README.md"
@@ -27,6 +27,11 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Typing :: Typed",
 ]
+
+[project.urls]
+Homepage = "https://github.com/annotated-types/annotated-types"
+Source = "https://github.com/annotated-types/annotated-types"
+Changelog = "https://github.com/annotated-types/annotated-types/releases"
 
 requires-python = ">=3.8"
 dependencies = ["typing-extensions>=4.0.0; python_version<'3.9'"]
