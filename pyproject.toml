@@ -28,14 +28,14 @@ classifiers = [
     "Typing :: Typed",
 ]
 
+requires-python = ">=3.8"
+dependencies = ["typing-extensions>=4.0.0; python_version<'3.9'"]
+dynamic = ["version"]
+
 [project.urls]
 Homepage = "https://github.com/annotated-types/annotated-types"
 Source = "https://github.com/annotated-types/annotated-types"
 Changelog = "https://github.com/annotated-types/annotated-types/releases"
-
-requires-python = ">=3.8"
-dependencies = ["typing-extensions>=4.0.0; python_version<'3.9'"]
-dynamic = ["version"]
 
 [build-system]
 requires = ["hatchling"]
