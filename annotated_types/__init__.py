@@ -153,7 +153,7 @@ class GroupedMetadata(Protocol):
     """A grouping of multiple BaseMetadata objects.
 
     `GroupedMetadata` on its own is not metadata and has no meaning.
-    All it the the constraint and metadata should be fully expressable
+    All of the constraints and metadata should be fully expressable
     in terms of the `BaseMetadata`'s returned by `GroupedMetadata.__iter__()`.
 
     Concrete implementations should override `GroupedMetadata.__iter__()`
