@@ -132,17 +132,20 @@ allow a specific timezone, though we note that this is often a symptom of fragil
 Users should prefer the statically inspectable metadata above, but if you need
 the full power and flexibility of arbitrary runtime predicates... here it is.
 
-We provide a few predefined predicates for common string constraints:
+For some common constraints, we provide generic types:
 
-* `IsLower = Predicate(str.islower)`
-* `IsUpper = Predicate(str.isupper)`
-* `IsDigit = Predicate(str.isdigit)`
-* `IsFinite = Predicate(math.isfinite)`
-* `IsNotFinite = Predicate(Not(math.isfinite))`
-* `IsNan = Predicate(math.isnan)`
-* `IsNotNan = Predicate(Not(math.isnan))`
-* `IsInfinite = Predicate(math.isinf)`
-* `IsNotInfinite = Predicate(Not(math.isinf))`
+* `IsLower       = Annotated[T, Predicate(str.islower)]`
+* `IsUpper       = Annotated[T, Predicate(str.isupper)]`
+* `IsDigit       = Annotated[T, Predicate(str.isdigit)]`
+* `IsFinite      = Annotated[T, Predicate(math.isfinite)]`
+* `IsNotFinite   = Annotated[T, Predicate(Not(math.isfinite))]`
+* `IsNan         = Annotated[T, Predicate(math.isnan)]`
+* `IsNotNan      = Annotated[T, Predicate(Not(math.isnan))]`
+* `IsInfinite    = Annotated[T, Predicate(math.isinf)]`
+* `IsNotInfinite = Annotated[T, Predicate(Not(math.isinf))]`
+
+so that you can write e.g. `x: IsFinite[float] = 2.0` instead of the longer
+(but exactly equivalent) `x: Annotated[float, Predicate(math.isfinite)] = 2.0`.
 
 Some libraries might have special logic to handle known or understandable predicates,
 for example by checking for `str.isdigit` and using its presence to both call custom
@@ -155,7 +158,7 @@ To enable basic negation of commonly used predicates like `math.isnan` without i
 We do not specify what behaviour should be expected for predicates that raise
 an exception.  For example `Annotated[int, Predicate(str.isdigit)]` might silently
 skip invalid constraints, or statically raise an error; or it might try calling it
-and then propogate or discard the resulting
+and then propagate or discard the resulting
 `TypeError: descriptor 'isdigit' for 'str' objects doesn't apply to a 'int' object`
 exception.  We encourage libraries to document the behaviour they choose.
 

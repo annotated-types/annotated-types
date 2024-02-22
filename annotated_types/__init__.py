@@ -1,5 +1,6 @@
 import math
 import sys
+import types
 from dataclasses import dataclass
 from datetime import tzinfo
 from typing import TYPE_CHECKING, Any, Callable, Iterator, Optional, SupportsFloat, SupportsIndex, TypeVar, Union
@@ -314,10 +315,21 @@ class Predicate(BaseMetadata):
     We do not specify what behaviour should be expected for predicates that raise
     an exception.  For example `Annotated[int, Predicate(str.isdigit)]` might silently
     skip invalid constraints, or statically raise an error; or it might try calling it
-    and then propogate or discard the resulting exception.
+    and then propagate or discard the resulting exception.
     """
 
     func: Callable[[Any], bool]
+
+    def __repr__(self) -> str:
+        if getattr(self.func, "__name__", "<lambda>") == "<lambda>":
+            return f"{self.__class__.__name__}({self.func!r})"
+        if isinstance(self.func, (types.MethodType, types.BuiltinMethodType)) and (
+            namespace := getattr(self.func.__self__, "__name__", None)
+        ):
+            return f"{self.__class__.__name__}({namespace}.{self.func.__name__})"
+        if isinstance(self.func, type(str.isascii)):  # method descriptor
+            return f"{self.__class__.__name__}({self.func.__qualname__})"
+        return f"{self.__class__.__name__}({self.func.__name__})"
 
 
 @dataclass

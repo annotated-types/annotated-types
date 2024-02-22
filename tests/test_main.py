@@ -1,3 +1,4 @@
+import math
 import sys
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, Iterator, Type, Union
@@ -135,3 +136,21 @@ def test_valid_cases(annotation: type, example: Any) -> None:
 )
 def test_invalid_cases(annotation: type, example: Any) -> None:
     assert is_valid(annotation, example) is False
+
+
+def a_predicate_fn(x: object) -> bool:
+    return not x
+
+
+@pytest.mark.parametrize(
+    "pred, repr_",
+    [
+        (annotated_types.Predicate(func=a_predicate_fn), "Predicate(a_predicate_fn)"),
+        (annotated_types.Predicate(func=str.isascii), "Predicate(str.isascii)"),
+        (annotated_types.Predicate(func=math.isfinite), "Predicate(math.isfinite)"),
+        (annotated_types.Predicate(func=bool), "Predicate(bool)"),
+        (annotated_types.Predicate(func := lambda _: True), f"Predicate({func!r})"),
+    ],
+)
+def test_predicate_repr(pred: annotated_types.Predicate, repr_: str) -> None:
+    assert repr(pred) == repr_
