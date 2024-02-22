@@ -314,7 +314,7 @@ class Predicate(BaseMetadata):
     We do not specify what behaviour should be expected for predicates that raise
     an exception.  For example `Annotated[int, Predicate(str.isdigit)]` might silently
     skip invalid constraints, or statically raise an error; or it might try calling it
-    and then propogate or discard the resulting exception.
+    and then propagate or discard the resulting exception.
     """
 
     func: Callable[[Any], bool]

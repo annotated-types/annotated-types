@@ -158,7 +158,7 @@ To enable basic negation of commonly used predicates like `math.isnan` without i
 We do not specify what behaviour should be expected for predicates that raise
 an exception.  For example `Annotated[int, Predicate(str.isdigit)]` might silently
 skip invalid constraints, or statically raise an error; or it might try calling it
-and then propogate or discard the resulting
+and then propagate or discard the resulting
 `TypeError: descriptor 'isdigit' for 'str' objects doesn't apply to a 'int' object`
 exception.  We encourage libraries to document the behaviour they choose.
 
