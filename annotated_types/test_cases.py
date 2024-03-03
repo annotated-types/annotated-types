@@ -121,7 +121,7 @@ def cases() -> Iterable[Case]:
 
     yield Case(at.LowerCase[str], ['abc', 'foobar'], ['', 'A', 'Boom'])
     yield Case(at.UpperCase[str], ['ABC', 'DEFO'], ['', 'a', 'abc', 'AbC'])
-    yield Case(at.IsDigits[str], ['123'], ['', 'ab', 'a1b2'])
+    yield Case(at.IsDigit[str], ['123'], ['', 'ab', 'a1b2'])
     yield Case(at.IsAscii[str], ['123', 'foo bar'], ['£100', '😊', 'whatever 👀'])
 
     yield Case(Annotated[int, at.Predicate(lambda x: x % 2 == 0)], [0, 2, 4], [1, 3, 5])
