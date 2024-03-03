@@ -305,7 +305,7 @@ class Predicate(BaseMetadata):
 
     We provide a few predefined predicates for common string constraints:
     ``IsLower = Predicate(str.islower)``, ``IsUpper = Predicate(str.isupper)``, and
-    ``IsDigit = Predicate(str.isdigit)``. Users are encouraged to use methods which
+    ``IsDigits = Predicate(str.isdigit)``. Users are encouraged to use methods which
     can be given special handling, and avoid indirection like ``lambda s: s.lower()``.
 
     Some libraries might have special logic to handle certain predicates, e.g. by
@@ -354,7 +354,8 @@ Return True if the string is an uppercase string, False otherwise.
 
 A string is uppercase if all cased characters in the string are uppercase and there is at least one cased character in the string.
 """  # noqa: E501
-IsDigits = Annotated[_StrType, Predicate(str.isdigit)]
+IsDigit = Annotated[_StrType, Predicate(str.isdigit)]
+IsDigits = IsDigit  # type: ignore  # plural for backwards compatibility, see #63
 """
 Return True if the string is a digit string, False otherwise.
 
