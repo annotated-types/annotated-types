@@ -1,5 +1,6 @@
 import math
 import sys
+import numbers
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, Iterator, Type, Union
 
@@ -76,6 +77,9 @@ def check_timezone(constraint: Constraint, val: Any) -> bool:
     # ellipsis
     return val.tzinfo is not None
 
+def check_quantity(constraint: Constraint, val: Any) -> bool:
+    assert isinstance(constraint, annotated_types.Quantity)
+    return isinstance(val, numbers.Number)
 
 Validator = Callable[[Constraint, Any], bool]
 
@@ -90,6 +94,7 @@ VALIDATORS: Dict[Type[Constraint], Validator] = {
     annotated_types.MinLen: check_min_len,
     annotated_types.MaxLen: check_max_len,
     annotated_types.Timezone: check_timezone,
+    annotated_types.Quantity: check_quantity,
 }
 
 

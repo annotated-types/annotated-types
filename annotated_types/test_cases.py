@@ -117,6 +117,10 @@ def cases() -> Iterable[Case]:
         [datetime(2000, 1, 1), datetime(2000, 1, 1, tzinfo=timezone(timedelta(hours=6)))],
     )
 
+    # Quantity
+
+    yield Case(Annotated[float, at.Quantity(unit='m')], (5, 4.2), ('5m', '4.2m'))
+
     # predicate types
 
     yield Case(at.LowerCase[str], ['abc', 'foobar'], ['', 'A', 'Boom'])
@@ -145,3 +149,4 @@ def cases() -> Iterable[Case]:
             yield at.Predicate(lambda x: float(x).is_integer())
 
     yield Case(Annotated[float, MyCustomGroupedMetadata()], [0, 2.0], [0.01, 1.5])
+

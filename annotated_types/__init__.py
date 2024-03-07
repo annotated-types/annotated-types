@@ -39,6 +39,7 @@ __all__ = (
     'MaxLen',
     'Len',
     'Timezone',
+    'Quantity',
     'Predicate',
     'LowerCase',
     'UpperCase',
@@ -294,6 +295,19 @@ class Timezone(BaseMetadata):
     """
 
     tz: Union[str, tzinfo, EllipsisType, None]
+
+
+@dataclass(frozen=True, **SLOTS)
+class Quantity(BaseMetadata):
+    """Indicates that the value is a physical quantity with the specified unit.
+
+    It is intended for usage with numeric types (any instance of ``numbers.Number``),
+    where the value represents the magnitude of the quantity.
+
+    Interpretation of the unit string is left to the discretion of the consumer.
+    """
+
+    unit: str
 
 
 @dataclass(frozen=True, **SLOTS)
