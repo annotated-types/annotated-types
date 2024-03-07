@@ -301,8 +301,8 @@ class Timezone(BaseMetadata):
 class Quantity(BaseMetadata):
     """Indicates that the value is a physical quantity with the specified unit.
 
-    It is intended for usage with numeric types,
-    where the value represents the magnitude of the quantity.
+    It is intended for usage with numeric types, where the value represents the
+    magnitude of the quantity.
 
     Interpretation of the unit string is left to the discretion of the consumer.
     """
