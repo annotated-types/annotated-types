@@ -79,7 +79,7 @@ def check_timezone(constraint: Constraint, val: Any) -> bool:
 
 def check_quantity(constraint: Constraint, val: Any) -> bool:
     assert isinstance(constraint, annotated_types.Quantity)
-    return isinstance(val, float)
+    return isinstance(val, (float, int))
 
 
 Validator = Callable[[Constraint, Any], bool]
