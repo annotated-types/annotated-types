@@ -1,5 +1,4 @@
 import math
-import numbers
 import sys
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, Iterator, Type, Union
@@ -80,7 +79,7 @@ def check_timezone(constraint: Constraint, val: Any) -> bool:
 
 def check_quantity(constraint: Constraint, val: Any) -> bool:
     assert isinstance(constraint, annotated_types.Quantity)
-    return isinstance(val, numbers.Number)
+    return isinstance(val, float)
 
 
 Validator = Callable[[Constraint, Any], bool]
