@@ -1,6 +1,6 @@
 import math
-import sys
 import numbers
+import sys
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, Iterator, Type, Union
 
