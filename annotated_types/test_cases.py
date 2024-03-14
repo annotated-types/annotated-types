@@ -119,7 +119,7 @@ def cases() -> Iterable[Case]:
 
     # Quantity
 
-    yield Case(Annotated[float, at.Quantity(unit='m')], (5, 4.2), ('5m', '4.2m'))
+    yield Case(Annotated[float, at.Unit(unit='m')], (5, 4.2), ('5m', '4.2m'))
 
     # predicate types
 

@@ -39,7 +39,7 @@ __all__ = (
     'MaxLen',
     'Len',
     'Timezone',
-    'Quantity',
+    'Unit',
     'Predicate',
     'LowerCase',
     'UpperCase',
@@ -298,7 +298,7 @@ class Timezone(BaseMetadata):
 
 
 @dataclass(frozen=True, **SLOTS)
-class Quantity(BaseMetadata):
+class Unit(BaseMetadata):
     """Indicates that the value is a physical quantity with the specified unit.
 
     It is intended for usage with numeric types, where the value represents the

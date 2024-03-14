@@ -78,7 +78,7 @@ def check_timezone(constraint: Constraint, val: Any) -> bool:
 
 
 def check_quantity(constraint: Constraint, val: Any) -> bool:
-    assert isinstance(constraint, annotated_types.Quantity)
+    assert isinstance(constraint, annotated_types.Unit)
     return isinstance(val, (float, int))
 
 
@@ -95,7 +95,7 @@ VALIDATORS: Dict[Type[Constraint], Validator] = {
     annotated_types.MinLen: check_min_len,
     annotated_types.MaxLen: check_max_len,
     annotated_types.Timezone: check_timezone,
-    annotated_types.Quantity: check_quantity,
+    annotated_types.Unit: check_quantity,
 }
 
 
