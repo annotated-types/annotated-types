@@ -126,6 +126,48 @@ allow a specific timezone, though we note that this is often a symptom of fragil
 * `Timezone` accepts [`tzinfo`](https://docs.python.org/3/library/datetime.html#tzinfo-objects) objects instead of
   `timezone`, extending compatibility to [`zoneinfo`](https://docs.python.org/3/library/zoneinfo.html) and third party libraries.
 
+### Unit
+
+`Unit(unit: str)` expresses that the annotated numeric value is the magnitude of
+a quantity with the specified unit. For example, `Annotated[float, Unit("m/s")]`
+would be a float representing a velocity in meters per second.
+
+Please note that `annotated_types` itself makes no attempt to parse or validate
+the unit string in any way. That is left entirely to downstream libraries,
+such as [`pint`](https://pint.readthedocs.io) or
+[`astropy.units`](https://docs.astropy.org/en/stable/units/).
+
+An example of how a library might use this metadata:
+
+```python
+from annotated_types import Unit
+from typing import Annotated, TypeVar, Callable, Any, get_origin, get_args
+
+# given a type annotated with a unit:
+Meters = Annotated[float, Unit("m")]
+
+
+# you can cast the annotation to a specific unit type with any
+# callable that accepts a string and returns the desired type
+T = TypeVar("T")
+def cast_unit(tp: Any, unit_cls: Callable[[str], T]) -> T | None:
+    if get_origin(tp) is Annotated:
+        for arg in get_args(tp):
+            if isinstance(arg, Unit):
+                return unit_cls(arg.unit)
+    return None
+
+
+# using `pint`
+import pint
+pint_unit = cast_unit(Meters, pint.Unit)
+
+
+# using `astropy.units`
+import astropy.units as u
+astropy_unit = cast_unit(Meters, u.Unit)
+```
+
 ### Predicate
 
 `Predicate(func: Callable)` expresses that `func(value)` is truthy for valid values.
