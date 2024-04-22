@@ -295,6 +295,7 @@ class Timezone(BaseMetadata):
 
     tz: Union[str, tzinfo, EllipsisType, None]
 
+
 @dataclass(frozen=True, **SLOTS)
 class Unit(BaseMetadata):
     """Indicates that the value is a physical quantity with the specified unit.
