@@ -3,17 +3,7 @@ import sys
 import types
 from dataclasses import dataclass
 from datetime import tzinfo
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    Iterator,
-    Optional,
-    SupportsFloat,
-    SupportsIndex,
-    TypeVar,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Callable, Iterator, Optional, SupportsFloat, SupportsIndex, TypeVar, Union
 
 if sys.version_info < (3, 8):
     from typing_extensions import Protocol, runtime_checkable
@@ -37,38 +27,37 @@ else:
 
 
 __all__ = (
-    "BaseMetadata",
-    "GroupedMetadata",
-    "Gt",
-    "Ge",
-    "Lt",
-    "Le",
-    "Interval",
-    "MultipleOf",
-    "MinLen",
-    "MaxLen",
-    "Len",
-    "Timezone",
-    "Unit",
-    "Predicate",
-    "LowerCase",
-    "UpperCase",
-    "IsDigits",
-    "IsFinite",
-    "IsNotFinite",
-    "IsNan",
-    "IsNotNan",
-    "IsInfinite",
-    "IsNotInfinite",
-    "doc",
-    "DocInfo",
-    "__version__",
+    'BaseMetadata',
+    'GroupedMetadata',
+    'Gt',
+    'Ge',
+    'Lt',
+    'Le',
+    'Interval',
+    'MultipleOf',
+    'MinLen',
+    'MaxLen',
+    'Len',
+    'Timezone',
+    'Predicate',
+    'LowerCase',
+    'UpperCase',
+    'IsDigits',
+    'IsFinite',
+    'IsNotFinite',
+    'IsNan',
+    'IsNotNan',
+    'IsInfinite',
+    'IsNotInfinite',
+    'doc',
+    'DocInfo',
+    '__version__',
 )
 
-__version__ = "0.6.0"
+__version__ = '0.6.0'
 
 
-T = TypeVar("T")
+T = TypeVar('T')
 
 
 # arguments that start with __ are considered
@@ -77,27 +66,33 @@ T = TypeVar("T")
 
 
 class SupportsGt(Protocol):
-    def __gt__(self: T, __other: T) -> bool: ...
+    def __gt__(self: T, __other: T) -> bool:
+        ...
 
 
 class SupportsGe(Protocol):
-    def __ge__(self: T, __other: T) -> bool: ...
+    def __ge__(self: T, __other: T) -> bool:
+        ...
 
 
 class SupportsLt(Protocol):
-    def __lt__(self: T, __other: T) -> bool: ...
+    def __lt__(self: T, __other: T) -> bool:
+        ...
 
 
 class SupportsLe(Protocol):
-    def __le__(self: T, __other: T) -> bool: ...
+    def __le__(self: T, __other: T) -> bool:
+        ...
 
 
 class SupportsMod(Protocol):
-    def __mod__(self: T, __other: T) -> T: ...
+    def __mod__(self: T, __other: T) -> T:
+        ...
 
 
 class SupportsDiv(Protocol):
-    def __div__(self: T, __other: T) -> T: ...
+    def __div__(self: T, __other: T) -> T:
+        ...
 
 
 class BaseMetadata:
@@ -190,7 +185,8 @@ class GroupedMetadata(Protocol):
     def __is_annotated_types_grouped_metadata__(self) -> Literal[True]:
         return True
 
-    def __iter__(self) -> Iterator[BaseMetadata]: ...
+    def __iter__(self) -> Iterator[BaseMetadata]:
+        ...
 
     if not TYPE_CHECKING:
         __slots__ = ()  # allow subclasses to use slots
@@ -199,9 +195,7 @@ class GroupedMetadata(Protocol):
             # Basic ABC like functionality without the complexity of an ABC
             super().__init_subclass__(*args, **kwargs)
             if cls.__iter__ is GroupedMetadata.__iter__:
-                raise TypeError(
-                    "Can't subclass GroupedMetadata without implementing __iter__"
-                )
+                raise TypeError("Can't subclass GroupedMetadata without implementing __iter__")
 
         def __iter__(self) -> Iterator[BaseMetadata]:  # noqa: F811
             raise NotImplementedError  # more helpful than "None has no attribute..." type errors
@@ -301,7 +295,6 @@ class Timezone(BaseMetadata):
 
     tz: Union[str, tzinfo, EllipsisType, None]
 
-
 @dataclass(frozen=True, **SLOTS)
 class Unit(BaseMetadata):
     """Indicates that the value is a physical quantity with the specified unit.
@@ -397,7 +390,7 @@ Return True if all characters in the string are ASCII, False otherwise.
 ASCII characters have code points in the range U+0000-U+007F. Empty string is ASCII too.
 """
 
-_NumericType = TypeVar("_NumericType", bound=Union[SupportsFloat, SupportsIndex])
+_NumericType = TypeVar('_NumericType', bound=Union[SupportsFloat, SupportsIndex])
 IsFinite = Annotated[_NumericType, Predicate(math.isfinite)]
 """Return True if x is neither an infinity nor a NaN, and False otherwise."""
 IsNotFinite = Annotated[_NumericType, Predicate(Not(math.isfinite))]
