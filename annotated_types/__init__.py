@@ -297,6 +297,29 @@ class Timezone(BaseMetadata):
 
 
 @dataclass(frozen=True, **SLOTS)
+class Unit(BaseMetadata):
+    """Indicates that the value is a physical quantity with the specified unit.
+
+    It is intended for usage with numeric types, where the value represents the
+    magnitude of the quantity. For example, ``distance: Annotated[float, Unit('m')]``
+    or ``speed: Annotated[float, Unit('m/s')]``.
+
+    Interpretation of the unit string is left to the discretion of the consumer.
+    It is suggested to follow conventions established by python libraries that work
+    with physical quantities, such as
+
+    - ``pint`` : <https://pint.readthedocs.io/en/stable/>
+    - ``astropy.units``: <https://docs.astropy.org/en/stable/units/>
+
+    For indicating a quantity with a certain dimensionality but without a specific unit
+    it is recommended to use square brackets, e.g. `Annotated[float, Unit('[time]')]`.
+    Note, however, ``annotated_types`` itself makes no use of the unit string.
+    """
+
+    unit: str
+
+
+@dataclass(frozen=True, **SLOTS)
 class Predicate(BaseMetadata):
     """``Predicate(func: Callable)`` implies `func(value)` is truthy for valid values.
 
