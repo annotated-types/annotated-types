@@ -197,7 +197,7 @@ class GroupedMetadata(Protocol):
             if cls.__iter__ is GroupedMetadata.__iter__:
                 raise TypeError("Can't subclass GroupedMetadata without implementing __iter__")
 
-        def __iter__(self) -> Iterator[object]:  # noqa: F811
+        def __iter__(self) -> Iterator[GroupedMetadata]:  # noqa: F811
             raise NotImplementedError  # more helpful than "None has no attribute..." type errors
 
 
@@ -214,7 +214,7 @@ class Interval(GroupedMetadata):
     lt: Union[SupportsLt, None] = None
     le: Union[SupportsLe, None] = None
 
-    def __iter__(self) -> Iterator[object]:
+    def __iter__(self) -> Iterator[GroupedMetadata]:
         """Unpack an Interval into zero or more single-bounds."""
         if self.gt is not None:
             yield Gt(self.gt)
@@ -271,7 +271,7 @@ class Len(GroupedMetadata):
     min_length: Annotated[int, Ge(0)] = 0
     max_length: Optional[Annotated[int, Ge(0)]] = None
 
-    def __iter__(self) -> Iterator[object]:
+    def __iter__(self) -> Iterator[GroupedMetadata]:
         """Unpack a Len into zone or more single-bounds."""
         if self.min_length > 0:
             yield MinLen(self.min_length)
