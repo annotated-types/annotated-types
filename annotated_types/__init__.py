@@ -151,7 +151,7 @@ class Le(BaseMetadata):
 
 @runtime_checkable
 class GroupedMetadata(Protocol):
-    """A grouping of multiple BaseMetadata objects.
+    """A grouping of multiple objects, like typing.Unpack.
 
     `GroupedMetadata` on its own is not metadata and has no meaning.
     All of the constraints and metadata should be fully expressable
