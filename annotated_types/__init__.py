@@ -151,7 +151,7 @@ class Le(BaseMetadata):
 
 @runtime_checkable
 class GroupedMetadata(Protocol):
-    """A grouping of multiple BaseMetadata objects.
+    """A grouping of multiple objects, like typing.Unpack.
 
     `GroupedMetadata` on its own is not metadata and has no meaning.
     All of the constraints and metadata should be fully expressable
@@ -166,7 +166,7 @@ class GroupedMetadata(Protocol):
     >>>     gt: float | None = None
     >>>     description: str | None = None
     ...
-    >>>     def __iter__(self) -> Iterable[BaseMetadata]:
+    >>>     def __iter__(self) -> Iterable[object]:
     >>>         if self.gt is not None:
     >>>             yield Gt(self.gt)
     >>>         if self.description is not None:
@@ -185,7 +185,7 @@ class GroupedMetadata(Protocol):
     def __is_annotated_types_grouped_metadata__(self) -> Literal[True]:
         return True
 
-    def __iter__(self) -> Iterator[BaseMetadata]:
+    def __iter__(self) -> Iterator[object]:
         ...
 
     if not TYPE_CHECKING:
