@@ -185,8 +185,7 @@ class GroupedMetadata(Protocol):
     def __is_annotated_types_grouped_metadata__(self) -> Literal[True]:
         return True
 
-    def __iter__(self) -> Iterator[object]:
-        ...
+    def __iter__(self) -> Iterator[object]: ...
 
     if not TYPE_CHECKING:
         __slots__ = ()  # allow subclasses to use slots
