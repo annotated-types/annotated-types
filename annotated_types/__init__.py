@@ -166,7 +166,7 @@ class GroupedMetadata(Protocol):
     >>>     gt: float | None = None
     >>>     description: str | None = None
     ...
-    >>>     def __iter__(self) -> Iterable[BaseMetadata]:
+    >>>     def __iter__(self) -> Iterable[object]:
     >>>         if self.gt is not None:
     >>>             yield Gt(self.gt)
     >>>         if self.description is not None:
@@ -185,7 +185,7 @@ class GroupedMetadata(Protocol):
     def __is_annotated_types_grouped_metadata__(self) -> Literal[True]:
         return True
 
-    def __iter__(self) -> Iterator[BaseMetadata]:
+    def __iter__(self) -> Iterator[object]:
         ...
 
     if not TYPE_CHECKING:
@@ -197,7 +197,7 @@ class GroupedMetadata(Protocol):
             if cls.__iter__ is GroupedMetadata.__iter__:
                 raise TypeError("Can't subclass GroupedMetadata without implementing __iter__")
 
-        def __iter__(self) -> Iterator[BaseMetadata]:  # noqa: F811
+        def __iter__(self) -> Iterator[object]:  # noqa: F811
             raise NotImplementedError  # more helpful than "None has no attribute..." type errors
 
 
@@ -214,7 +214,7 @@ class Interval(GroupedMetadata):
     lt: Union[SupportsLt, None] = None
     le: Union[SupportsLe, None] = None
 
-    def __iter__(self) -> Iterator[BaseMetadata]:
+    def __iter__(self) -> Iterator[object]:
         """Unpack an Interval into zero or more single-bounds."""
         if self.gt is not None:
             yield Gt(self.gt)
@@ -227,7 +227,7 @@ class Interval(GroupedMetadata):
 
 
 @dataclass(frozen=True, **SLOTS)
-class MultipleOf(BaseMetadata):
+class MultipleOf(object):
     """MultipleOf(multiple_of=x) might be interpreted in two ways:
 
     1. Python semantics, implying ``value % multiple_of == 0``, or
@@ -271,7 +271,7 @@ class Len(GroupedMetadata):
     min_length: Annotated[int, Ge(0)] = 0
     max_length: Optional[Annotated[int, Ge(0)]] = None
 
-    def __iter__(self) -> Iterator[BaseMetadata]:
+    def __iter__(self) -> Iterator[object]:
         """Unpack a Len into zone or more single-bounds."""
         if self.min_length > 0:
             yield MinLen(self.min_length)
@@ -280,7 +280,7 @@ class Len(GroupedMetadata):
 
 
 @dataclass(frozen=True, **SLOTS)
-class Timezone(BaseMetadata):
+class Timezone(object):
     """Timezone(tz=...) requires a datetime to be aware (or ``tz=None``, naive).
 
     ``Annotated[datetime, Timezone(None)]`` must be a naive datetime.
