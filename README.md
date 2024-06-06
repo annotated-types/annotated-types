@@ -180,11 +180,11 @@ For some common constraints, we provide generic types:
 * `IsUpper       = Annotated[T, Predicate(str.isupper)]`
 * `IsDigit       = Annotated[T, Predicate(str.isdigit)]`
 * `IsFinite      = Annotated[T, Predicate(math.isfinite)]`
-* `IsNotFinite   = Annotated[T, Predicate(Not(math.isfinite))]`
+* `IsNotFinite   = Annotated[T, Not(Predicate(math.isfinite))]`
 * `IsNan         = Annotated[T, Predicate(math.isnan)]`
-* `IsNotNan      = Annotated[T, Predicate(Not(math.isnan))]`
+* `IsNotNan      = Annotated[T, Not(Predicate(math.isnan))]`
 * `IsInfinite    = Annotated[T, Predicate(math.isinf)]`
-* `IsNotInfinite = Annotated[T, Predicate(Not(math.isinf))]`
+* `IsNotInfinite = Annotated[T, Not(Predicate(math.isinf))]`
 
 so that you can write e.g. `x: IsFinite[float] = 2.0` instead of the longer
 (but exactly equivalent) `x: Annotated[float, Predicate(math.isfinite)] = 2.0`.
@@ -213,6 +213,11 @@ It expects a value that can be statically analyzed, as the main use case is for 
 It returns a `DocInfo` class with a single attribute `documentation` containing the value passed to `doc()`.
 
 This is the early adopter's alternative form of the [`typing-doc` proposal](https://github.com/tiangolo/fastapi/blob/typing-doc/typing_doc.md).
+
+### Not
+
+Not negates any predicate or metadata object. It is used to express that a value should not satisfy a predicate or metadata object.
+This may not make sense for all metadata objects, implementers should decide how to handle these cases.
 
 ### Integrating downstream types with `GroupedMetadata`
 
