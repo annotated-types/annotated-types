@@ -158,5 +158,5 @@ def a_predicate_fn(x: object) -> bool:
         (annotated_types.Predicate(func := lambda _: True), f"Predicate({func!r})"),
     ],
 )
-def test_predicate_repr(pred: annotated_types.Predicate, repr_: str) -> None:
+def test_predicate_repr(pred: annotated_types.Predicate[Any], repr_: str) -> None:
     assert repr(pred) == repr_

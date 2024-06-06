@@ -1,9 +1,23 @@
+from __future__ import annotations
+
+import datetime
 import math
 import sys
 import types
 from dataclasses import dataclass
 from datetime import tzinfo
-from typing import TYPE_CHECKING, Any, Callable, Iterator, Optional, SupportsFloat, SupportsIndex, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Generic,
+    Iterator,
+    SupportsFloat,
+    SupportsIndex,
+    TypeVar,
+    Union,
+    overload,
+)
 
 if sys.version_info < (3, 8):
     from typing_extensions import Protocol, runtime_checkable
@@ -64,34 +78,51 @@ T = TypeVar('T')
 # positional only
 # see https://peps.python.org/pep-0484/#positional-only-arguments
 
+_T_contra = TypeVar('_T_contra', contravariant=True)
 
-class SupportsGt(Protocol):
-    def __gt__(self: T, __other: T) -> bool:
+
+class SupportsGt(Protocol[_T_contra]):
+    def __gt__(self, __other: _T_contra) -> bool:
         ...
 
 
-class SupportsGe(Protocol):
-    def __ge__(self: T, __other: T) -> bool:
+class SupportsGe(Protocol[_T_contra]):
+    def __ge__(self, __other: _T_contra) -> bool:
         ...
 
 
-class SupportsLt(Protocol):
-    def __lt__(self: T, __other: T) -> bool:
+class SupportsLt(Protocol[_T_contra]):
+    def __lt__(self, __other: _T_contra) -> bool:
         ...
 
 
-class SupportsLe(Protocol):
-    def __le__(self: T, __other: T) -> bool:
+class SupportsLe(Protocol[_T_contra]):
+    def __le__(self, __other: _T_contra) -> bool:
         ...
 
 
-class SupportsMod(Protocol):
-    def __mod__(self: T, __other: T) -> T:
+class SupportsRichCompare(
+    SupportsGt[_T_contra],
+    SupportsGe[_T_contra],
+    SupportsLt[_T_contra],
+    SupportsLe[_T_contra],
+    Protocol[_T_contra],
+):
+    ...
+
+
+class SupportsMod(Protocol[_T_contra]):
+    def __mod__(self, __other: _T_contra) -> object:
         ...
 
 
-class SupportsDiv(Protocol):
-    def __div__(self: T, __other: T) -> T:
+class SupportsDiv(Protocol[_T_contra]):
+    def __div__(self, __other: _T_contra) -> object:
+        ...
+
+
+class SupportsLen(Protocol):
+    def __len__(self) -> int:
         ...
 
 
@@ -106,47 +137,59 @@ class BaseMetadata:
 
 
 @dataclass(frozen=True, **SLOTS)
-class Gt(BaseMetadata):
+class Gt(BaseMetadata, Generic[T]):
     """Gt(gt=x) implies that the value must be greater than x.
 
     It can be used with any type that supports the ``>`` operator,
     including numbers, dates and times, strings, sets, and so on.
     """
 
-    gt: SupportsGt
+    gt: T
+
+    def __supports_type__(self, obj: SupportsGt[T]) -> bool:
+        return obj > self.gt
 
 
 @dataclass(frozen=True, **SLOTS)
-class Ge(BaseMetadata):
+class Ge(BaseMetadata, Generic[T]):
     """Ge(ge=x) implies that the value must be greater than or equal to x.
 
     It can be used with any type that supports the ``>=`` operator,
     including numbers, dates and times, strings, sets, and so on.
     """
 
-    ge: SupportsGe
+    ge: T
+
+    def __supports_type__(self, obj: SupportsGe[T]) -> bool:
+        return obj >= self.ge
 
 
 @dataclass(frozen=True, **SLOTS)
-class Lt(BaseMetadata):
+class Lt(BaseMetadata, Generic[T]):
     """Lt(lt=x) implies that the value must be less than x.
 
     It can be used with any type that supports the ``<`` operator,
     including numbers, dates and times, strings, sets, and so on.
     """
 
-    lt: SupportsLt
+    lt: T
+
+    def __supports_type__(self, obj: SupportsLt[T]) -> bool:
+        return obj < self.lt
 
 
 @dataclass(frozen=True, **SLOTS)
-class Le(BaseMetadata):
+class Le(BaseMetadata, Generic[T]):
     """Le(le=x) implies that the value must be less than or equal to x.
 
     It can be used with any type that supports the ``<=`` operator,
     including numbers, dates and times, strings, sets, and so on.
     """
 
-    le: SupportsLe
+    le: T
+
+    def __supports_type__(self, obj: SupportsLe[T]) -> bool:
+        return obj <= self.le
 
 
 @runtime_checkable
@@ -154,7 +197,7 @@ class GroupedMetadata(Protocol):
     """A grouping of multiple objects, like typing.Unpack.
 
     `GroupedMetadata` on its own is not metadata and has no meaning.
-    All of the constraints and metadata should be fully expressable
+    All of the constraints and metadata should be fully expressible
     in terms of the `BaseMetadata`'s returned by `GroupedMetadata.__iter__()`.
 
     Concrete implementations should override `GroupedMetadata.__iter__()`
@@ -202,17 +245,17 @@ class GroupedMetadata(Protocol):
 
 
 @dataclass(frozen=True, **KW_ONLY, **SLOTS)
-class Interval(GroupedMetadata):
+class Interval(GroupedMetadata, Generic[T]):
     """Interval can express inclusive or exclusive bounds with a single object.
 
     It accepts keyword arguments ``gt``, ``ge``, ``lt``, and/or ``le``, which
     are interpreted the same way as the single-bound constraints.
     """
 
-    gt: Union[SupportsGt, None] = None
-    ge: Union[SupportsGe, None] = None
-    lt: Union[SupportsLt, None] = None
-    le: Union[SupportsLe, None] = None
+    gt: T | None = None
+    ge: T | None = None
+    lt: T | None = None
+    le: T | None = None
 
     def __iter__(self) -> Iterator[BaseMetadata]:
         """Unpack an Interval into zero or more single-bounds."""
@@ -225,9 +268,20 @@ class Interval(GroupedMetadata):
         if self.le is not None:
             yield Le(self.le)
 
+    def __supports_type__(self, obj: SupportsRichCompare[T]) -> bool:
+        if self.gt is not None and not obj > self.gt:
+            return False
+        if self.ge is not None and not obj >= self.ge:
+            return False
+        if self.lt is not None and not obj < self.lt:
+            return False
+        if self.le is not None and not obj <= self.le:
+            return False
+        return True
+
 
 @dataclass(frozen=True, **SLOTS)
-class MultipleOf(BaseMetadata):
+class MultipleOf(BaseMetadata, Generic[T]):
     """MultipleOf(multiple_of=x) might be interpreted in two ways:
 
     1. Python semantics, implying ``value % multiple_of == 0``, or
@@ -237,7 +291,18 @@ class MultipleOf(BaseMetadata):
     and libraries to carefully document which they implement.
     """
 
-    multiple_of: Union[SupportsDiv, SupportsMod]
+    multiple_of: T
+
+    @overload
+    def __supports_type__(self, obj: SupportsDiv[T]) -> bool:
+        ...
+
+    @overload
+    def __supports_type__(self, obj: SupportsMod[T]) -> bool:
+        ...
+
+    def __supports_type__(self, obj: SupportsMod[T] | SupportsDiv[T]) -> bool:
+        raise NotImplementedError
 
 
 @dataclass(frozen=True, **SLOTS)
@@ -249,6 +314,9 @@ class MinLen(BaseMetadata):
 
     min_length: Annotated[int, Ge(0)]
 
+    def __supports_type__(self, obj: SupportsLen) -> bool:
+        return len(obj) >= self.min_length
+
 
 @dataclass(frozen=True, **SLOTS)
 class MaxLen(BaseMetadata):
@@ -258,6 +326,9 @@ class MaxLen(BaseMetadata):
     """
 
     max_length: Annotated[int, Ge(0)]
+
+    def __supports_type__(self, obj: SupportsLen) -> bool:
+        return len(obj) <= self.max_length
 
 
 @dataclass(frozen=True, **SLOTS)
@@ -269,7 +340,7 @@ class Len(GroupedMetadata):
     """
 
     min_length: Annotated[int, Ge(0)] = 0
-    max_length: Optional[Annotated[int, Ge(0)]] = None
+    max_length: Annotated[int, Ge(0)] | None = None
 
     def __iter__(self) -> Iterator[BaseMetadata]:
         """Unpack a Len into zone or more single-bounds."""
@@ -277,6 +348,13 @@ class Len(GroupedMetadata):
             yield MinLen(self.min_length)
         if self.max_length is not None:
             yield MaxLen(self.max_length)
+
+    def __supports_type__(self, obj: SupportsLen) -> bool:
+        if self.min_length > 0 and len(obj) < self.min_length:
+            return False
+        if self.max_length is not None and len(obj) > self.max_length:
+            return False
+        return True
 
 
 @dataclass(frozen=True, **SLOTS)
@@ -293,7 +371,14 @@ class Timezone(BaseMetadata):
     a symptom of poor design.
     """
 
-    tz: Union[str, tzinfo, EllipsisType, None]
+    tz: str | tzinfo | EllipsisType | None
+
+    def __supports_type__(self, obj: datetime.datetime) -> bool:
+        if self.tz is None:
+            return obj.tzinfo is None
+        if self.tz is Ellipsis:
+            return obj.tzinfo is not None
+        raise NotImplementedError
 
 
 @dataclass(frozen=True, **SLOTS)
@@ -320,7 +405,7 @@ class Unit(BaseMetadata):
 
 
 @dataclass(frozen=True, **SLOTS)
-class Predicate(BaseMetadata):
+class Predicate(BaseMetadata, Generic[T]):
     """``Predicate(func: Callable)`` implies `func(value)` is truthy for valid values.
 
     Users should prefer statically inspectable metadata, but if you need the full
@@ -341,7 +426,7 @@ class Predicate(BaseMetadata):
     and then propagate or discard the resulting exception.
     """
 
-    func: Callable[[Any], bool]
+    func: Callable[[T], bool]
 
     def __repr__(self) -> str:
         if getattr(self.func, "__name__", "<lambda>") == "<lambda>":
@@ -354,13 +439,19 @@ class Predicate(BaseMetadata):
             return f"{self.__class__.__name__}({self.func.__qualname__})"
         return f"{self.__class__.__name__}({self.func.__name__})"
 
+    def __supports_type__(self, obj: T) -> bool:
+        return self.func(obj)
 
-@dataclass
-class Not:
-    func: Callable[[Any], bool]
 
-    def __call__(self, __v: Any) -> bool:
+@dataclass(frozen=True, **SLOTS)
+class Not(Generic[T]):
+    func: Callable[[T], bool]
+
+    def __call__(self, __v: T) -> bool:
         return not self.func(__v)
+
+    def __supports_type__(self, obj: T) -> bool:
+        return not self.func(obj)
 
 
 _StrType = TypeVar("_StrType", bound=str)
