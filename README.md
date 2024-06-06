@@ -216,7 +216,9 @@ This is the early adopter's alternative form of the [`typing-doc` proposal](http
 
 ### Not
 
-Not negates any predicate or metadata object. It is used to express that a value should not satisfy a predicate or metadata object.
+Not negates any predicate or metadata object.
+It is used to express that a value should not satisfy a predicate or metadata object.
+For example, `Annotated[int, Not(Gt(10))]` would be an integer that is less than or equal to 10.
 This may not make sense for all metadata objects, implementers should decide how to handle these cases.
 
 ### Integrating downstream types with `GroupedMetadata`
