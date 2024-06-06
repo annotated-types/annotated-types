@@ -82,6 +82,12 @@ def check_quantity(constraint: Constraint, val: Any) -> bool:
     return isinstance(val, (float, int))
 
 
+def check_negation(constraint: Constraint, val: Any) -> bool:
+    assert isinstance(constraint, annotated_types.Not)
+    inner = VALIDATORS[type(constraint.inner)]
+    return not inner(constraint.inner, val)
+
+
 Validator = Callable[[Constraint, Any], bool]
 
 
@@ -96,6 +102,7 @@ VALIDATORS: Dict[Type[Constraint], Validator] = {
     annotated_types.MaxLen: check_max_len,
     annotated_types.Timezone: check_timezone,
     annotated_types.Unit: check_quantity,
+    annotated_types.Not: check_negation,
 }
 
 

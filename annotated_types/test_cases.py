@@ -149,3 +149,7 @@ def cases() -> Iterable[Case]:
             yield at.Predicate(lambda x: float(x).is_integer())
 
     yield Case(Annotated[float, MyCustomGroupedMetadata()], [0, 2.0], [0.01, 1.5])
+
+    # negation
+    yield Case(Annotated[int, at.Not(at.Gt(0))], (-1, 0), (1,))
+    yield Case(Annotated[int, at.Not(at.Predicate(math.isfinite))], (math.nan, math.inf), (1, 0))

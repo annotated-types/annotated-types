@@ -356,11 +356,8 @@ class Predicate(BaseMetadata):
 
 
 @dataclass
-class Not:
-    func: Callable[[Any], bool]
-
-    def __call__(self, __v: Any) -> bool:
-        return not self.func(__v)
+class Not(BaseMetadata):
+    inner: BaseMetadata
 
 
 _StrType = TypeVar("_StrType", bound=str)
@@ -394,15 +391,15 @@ ASCII characters have code points in the range U+0000-U+007F. Empty string is AS
 _NumericType = TypeVar('_NumericType', bound=Union[SupportsFloat, SupportsIndex])
 IsFinite = Annotated[_NumericType, Predicate(math.isfinite)]
 """Return True if x is neither an infinity nor a NaN, and False otherwise."""
-IsNotFinite = Annotated[_NumericType, Predicate(Not(math.isfinite))]
+IsNotFinite = Annotated[_NumericType, Not(Predicate(math.isfinite))]
 """Return True if x is one of infinity or NaN, and False otherwise"""
 IsNan = Annotated[_NumericType, Predicate(math.isnan)]
 """Return True if x is a NaN (not a number), and False otherwise."""
-IsNotNan = Annotated[_NumericType, Predicate(Not(math.isnan))]
+IsNotNan = Annotated[_NumericType, Not(Predicate(math.isnan))]
 """Return True if x is anything but NaN (not a number), and False otherwise."""
 IsInfinite = Annotated[_NumericType, Predicate(math.isinf)]
 """Return True if x is a positive or negative infinity, and False otherwise."""
-IsNotInfinite = Annotated[_NumericType, Predicate(Not(math.isinf))]
+IsNotInfinite = Annotated[_NumericType, Not(Predicate(math.isinf))]
 """Return True if x is neither a positive or negative infinity, and False otherwise."""
 
 try:
