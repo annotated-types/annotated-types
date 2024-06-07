@@ -6,18 +6,7 @@ import sys
 import types
 from dataclasses import dataclass
 from datetime import tzinfo
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    Generic,
-    Iterator,
-    SupportsFloat,
-    SupportsIndex,
-    TypeVar,
-    Union,
-    overload,
-)
+from typing import TYPE_CHECKING, Any, Callable, Generic, Iterator, SupportsFloat, SupportsIndex, TypeVar, Union
 
 if sys.version_info < (3, 8):
     from typing_extensions import Protocol, runtime_checkable
@@ -82,22 +71,22 @@ _T_contra = TypeVar('_T_contra', contravariant=True)
 
 
 class SupportsGt(Protocol[_T_contra]):
-    def __gt__(self, __other: _T_contra) -> bool:
+    def __gt__(self, other: _T_contra, /) -> bool:
         ...
 
 
 class SupportsGe(Protocol[_T_contra]):
-    def __ge__(self, __other: _T_contra) -> bool:
+    def __ge__(self, other: _T_contra, /) -> bool:
         ...
 
 
 class SupportsLt(Protocol[_T_contra]):
-    def __lt__(self, __other: _T_contra) -> bool:
+    def __lt__(self, other: _T_contra, /) -> bool:
         ...
 
 
 class SupportsLe(Protocol[_T_contra]):
-    def __le__(self, __other: _T_contra) -> bool:
+    def __le__(self, other: _T_contra, /) -> bool:
         ...
 
 
@@ -112,12 +101,12 @@ class SupportsRichCompare(
 
 
 class SupportsMod(Protocol[_T_contra]):
-    def __mod__(self, __other: _T_contra) -> object:
+    def __mod__(self, other: _T_contra, /) -> object:
         ...
 
 
 class SupportsDiv(Protocol[_T_contra]):
-    def __div__(self, __other: _T_contra) -> object:
+    def __div__(self, other: _T_contra, /) -> object:
         ...
 
 
@@ -292,14 +281,6 @@ class MultipleOf(BaseMetadata, Generic[T]):
     """
 
     multiple_of: T
-
-    @overload
-    def __supports_type__(self, obj: SupportsDiv[T]) -> bool:
-        ...
-
-    @overload
-    def __supports_type__(self, obj: SupportsMod[T]) -> bool:
-        ...
 
     def __supports_type__(self, obj: SupportsMod[T] | SupportsDiv[T]) -> bool:
         raise NotImplementedError
