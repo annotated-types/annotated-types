@@ -128,7 +128,7 @@ def cases() -> Iterable[Case]:
     yield Case(at.IsDigit[str], ['123'], ['', 'ab', 'a1b2'])
     yield Case(at.IsAscii[str], ['123', 'foo bar'], ['£100', '😊', 'whatever 👀'])
 
-    yield Case(Annotated[int, at.Predicate(lambda x: x % 2 == 0)], [0, 2, 4], [1, 3, 5])
+    yield Case(Annotated[int, at.Predicate(lambda x: x % 2 == 0)], [0, 2, 4], [1, 3, 5])  # type: ignore
 
     yield Case(at.IsFinite[float], [1.23], [math.nan, math.inf, -math.inf])
     yield Case(at.IsNotFinite[float], [math.nan, math.inf], [1.23])
@@ -138,14 +138,18 @@ def cases() -> Iterable[Case]:
     yield Case(at.IsNotInfinite[float], [math.nan, 1.23], [math.inf])
 
     # check stacked predicates
-    yield Case(at.IsInfinite[Annotated[float, at.Predicate(lambda x: x > 0)]], [math.inf], [-math.inf, 1.23, math.nan])
+    yield Case(
+        at.IsInfinite[Annotated[float, at.Predicate(lambda x: x > 0)]],
+        [math.inf],
+        [-math.inf, 1.23, math.nan],
+    )
 
     # doc
     yield Case(Annotated[int, at.doc("A number")], [1, 2], [])
 
     # custom GroupedMetadata
     class MyCustomGroupedMetadata(at.GroupedMetadata):
-        def __iter__(self) -> Iterator[at.Predicate]:
+        def __iter__(self) -> Iterator[at.Predicate[Any]]:
             yield at.Predicate(lambda x: float(x).is_integer())
 
     yield Case(Annotated[float, MyCustomGroupedMetadata()], [0, 2.0], [0.01, 1.5])
