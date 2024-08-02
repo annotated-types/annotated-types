@@ -107,8 +107,11 @@ def get_constraints(tp: type) -> Iterator[Constraint]:
     for arg in args:
         if isinstance(arg, annotated_types.BaseMetadata):
             yield arg
-        elif isinstance(arg, annotated_types.GroupedMetadata):
-            yield from arg  # type: ignore
+        elif isinstance(arg, (annotated_types.GroupedMetadata, object)):
+            try:
+                yield from arg
+            except TypeError:
+                yield arg
         elif isinstance(arg, slice):
             yield from annotated_types.Len(arg.start or 0, arg.stop)
 
