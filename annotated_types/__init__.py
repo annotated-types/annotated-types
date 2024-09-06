@@ -407,7 +407,7 @@ IsNotInfinite = Annotated[_NumericType, Predicate(Not(math.isinf))]
 
 try:
     # PEP 727 – Documentation in Annotated Metadata
-    from typing_extensions import Doc # type: ignore [no-redef]
+    from typing_extensions import Doc  # type: ignore[attr-defined]
 except ImportError:
 
     @dataclass(frozen=True, **SLOTS)
@@ -420,7 +420,9 @@ except ImportError:
         documentation: str
         """The documentation string passed to doc()."""
 
-DocInfo = Doc # backwards compatibility
+
+DocInfo = Doc  # backwards compatibility
+
 
 def doc(
     documentation: str,
