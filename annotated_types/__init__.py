@@ -422,16 +422,4 @@ except ImportError:
 
 
 DocInfo = Doc  # backwards compatibility
-
-
-def doc(
-    documentation: str,
-) -> Doc:
-    """
-    Add documentation to a type annotation inside of Annotated.
-
-    For example:
-
-    >>> def hi(name: Annotated[int, doc("The name of the user")]) -> None: ...
-    """
-    return Doc(documentation)
+doc = Doc
