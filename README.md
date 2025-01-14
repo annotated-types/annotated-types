@@ -96,9 +96,9 @@ and `Len(max_length=y)` respectively.
 
 Examples of usage:
 
-* `Annotated[list, MaxLen(10)]` (or `Annotated[list, Len(max_length=10))`) - list must have a length of 10 or less
+* `Annotated[list, MaxLen(10)]` (or `Annotated[list, Len(max_length=10)]`) - list must have a length of 10 or less
 * `Annotated[str, MaxLen(10)]` - string must have a length of 10 or less
-* `Annotated[list, MinLen(3))` (or `Annotated[list, Len(min_length=3))`) - list must have a length of 3 or more
+* `Annotated[list, MinLen(3)]` (or `Annotated[list, Len(min_length=3)]`) - list must have a length of 3 or more
 * `Annotated[list, Len(4, 6)]` - list must have a length of 4, 5, or 6
 * `Annotated[list, Len(8, 8)]` - list must have a length of exactly 8
 
