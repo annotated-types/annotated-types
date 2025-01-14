@@ -86,3 +86,6 @@ color_output = true
 strict = true
 warn_return_any = false
 show_error_codes = true
+
+[tool.pyright]
+enableExperimentalFeatures = true
