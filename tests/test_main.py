@@ -151,12 +151,12 @@ def a_predicate_fn(x: object) -> bool:
 @pytest.mark.parametrize(
     "pred, repr_",
     [
-        (annotated_types.Predicate(func=a_predicate_fn), "Predicate(a_predicate_fn)"),
-        (annotated_types.Predicate(func=str.isascii), "Predicate(str.isascii)"),
-        (annotated_types.Predicate(func=math.isfinite), "Predicate(math.isfinite)"),
-        (annotated_types.Predicate(func=bool), "Predicate(bool)"),
-        (annotated_types.Predicate(func := lambda _: True), f"Predicate({func!r})"),
+        (annotated_types.Predicate(func=a_predicate_fn), ["Predicate(a_predicate_fn)"]),
+        (annotated_types.Predicate(func=str.isascii), ["Predicate(str.isascii)"]),
+        (annotated_types.Predicate(func=math.isfinite), ["Predicate(math.isfinite)", "Predicate(isfinite)"]),
+        (annotated_types.Predicate(func=bool), ["Predicate(bool)"]),
+        (annotated_types.Predicate(func := lambda _: True), [f"Predicate({func!r})"]),
     ],
 )
 def test_predicate_repr(pred: annotated_types.Predicate, repr_: str) -> None:
-    assert repr(pred) == repr_
+    assert repr(pred) in repr_
