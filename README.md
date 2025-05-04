@@ -176,8 +176,8 @@ the full power and flexibility of arbitrary runtime predicates... here it is.
 
 For some common constraints, we provide generic types:
 
-* `IsLower       = Annotated[T, Predicate(str.islower)]`
-* `IsUpper       = Annotated[T, Predicate(str.isupper)]`
+* `LowerCase     = Annotated[T, Predicate(str.islower)]`
+* `UpperCase     = Annotated[T, Predicate(str.isupper)]`
 * `IsDigit       = Annotated[T, Predicate(str.isdigit)]`
 * `IsFinite      = Annotated[T, Predicate(math.isfinite)]`
 * `IsNotFinite   = Annotated[T, Predicate(Not(math.isfinite))]`

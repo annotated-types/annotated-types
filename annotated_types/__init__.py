@@ -327,7 +327,7 @@ class Predicate(BaseMetadata):
     power and flexibility of arbitrary runtime predicates... here it is.
 
     We provide a few predefined predicates for common string constraints:
-    ``IsLower = Predicate(str.islower)``, ``IsUpper = Predicate(str.isupper)``, and
+    ``LowerCase = Predicate(str.islower)``, ``UpperCase = Predicate(str.isupper)``, and
     ``IsDigits = Predicate(str.isdigit)``. Users are encouraged to use methods which
     can be given special handling, and avoid indirection like ``lambda s: s.lower()``.
 
