@@ -8,6 +8,7 @@ authors = [
 ]
 readme = "README.md"
 repository = "https://github.com/annotated-types/annotated-types"
+license = "MIT"
 license-files = ["LICENSE"]
 classifiers = [
     "Development Status :: 4 - Beta",
