@@ -1,5 +1,6 @@
 import math
 import types
+from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 from datetime import tzinfo
 from types import EllipsisType
@@ -7,10 +8,7 @@ from typing import (
     TYPE_CHECKING,
     Annotated,
     Any,
-    Callable,
-    Iterator,
     Literal,
-    Optional,
     Protocol,
     SupportsFloat,
     SupportsIndex,
@@ -206,10 +204,10 @@ class Interval(GroupedMetadata):
     are interpreted the same way as the single-bound constraints.
     """
 
-    gt: Union[SupportsGt, None] = None
-    ge: Union[SupportsGe, None] = None
-    lt: Union[SupportsLt, None] = None
-    le: Union[SupportsLe, None] = None
+    gt: SupportsGt | None = None
+    ge: SupportsGe | None = None
+    lt: SupportsLt | None = None
+    le: SupportsLe | None = None
 
     def __iter__(self) -> Iterator[BaseMetadata]:
         """Unpack an Interval into zero or more single-bounds."""
@@ -234,7 +232,7 @@ class MultipleOf(BaseMetadata):
     and libraries to carefully document which they implement.
     """
 
-    multiple_of: Union[SupportsDiv, SupportsMod]
+    multiple_of: SupportsDiv | SupportsMod
 
 
 @dataclass(frozen=True, **SLOTS)
@@ -266,7 +264,7 @@ class Len(GroupedMetadata):
     """
 
     min_length: Annotated[int, Ge(0)] = 0
-    max_length: Optional[Annotated[int, Ge(0)]] = None
+    max_length: Annotated[int, Ge(0)] | None = None
 
     def __iter__(self) -> Iterator[BaseMetadata]:
         """Unpack a Len into zone or more single-bounds."""
@@ -290,7 +288,7 @@ class Timezone(BaseMetadata):
     a symptom of poor design.
     """
 
-    tz: Union[str, tzinfo, EllipsisType, None]
+    tz: str | tzinfo | EllipsisType | None
 
 
 @dataclass(frozen=True, **SLOTS)
