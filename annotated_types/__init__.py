@@ -1,29 +1,26 @@
 import math
-import sys
 import types
 from dataclasses import dataclass
 from datetime import tzinfo
-from typing import TYPE_CHECKING, Any, Callable, Iterator, Optional, SupportsFloat, SupportsIndex, TypeVar, Union
+from types import EllipsisType
+from typing import (
+    TYPE_CHECKING,
+    Annotated,
+    Any,
+    Callable,
+    Iterator,
+    Literal,
+    Optional,
+    Protocol,
+    SupportsFloat,
+    SupportsIndex,
+    TypeVar,
+    Union,
+    runtime_checkable,
+)
 
-if sys.version_info < (3, 8):
-    from typing_extensions import Protocol, runtime_checkable
-else:
-    from typing import Protocol, runtime_checkable
-
-if sys.version_info < (3, 9):
-    from typing_extensions import Annotated, Literal
-else:
-    from typing import Annotated, Literal
-
-if sys.version_info < (3, 10):
-    EllipsisType = type(Ellipsis)
-    KW_ONLY = {}
-    SLOTS = {}
-else:
-    from types import EllipsisType
-
-    KW_ONLY = {"kw_only": True}
-    SLOTS = {"slots": True}
+KW_ONLY = {"kw_only": True}
+SLOTS = {"slots": True}
 
 
 __all__ = (

@@ -1,12 +1,6 @@
 import math
-import sys
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, Iterator, Type, Union
-
-if sys.version_info < (3, 9):
-    from typing_extensions import Annotated, get_args, get_origin
-else:
-    from typing import Annotated, get_args, get_origin
+from typing import TYPE_CHECKING, Annotated, Any, Callable, Dict, Iterable, Iterator, Type, Union, get_args, get_origin
 
 import pytest
 

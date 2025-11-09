@@ -1,12 +1,6 @@
-import sys
-from typing import Iterator
+from typing import Iterator, Literal
 
 import pytest
-
-if sys.version_info < (3, 9):
-    from typing_extensions import Literal
-else:
-    from typing import Literal
 
 from annotated_types import BaseMetadata, GroupedMetadata, Gt
 
