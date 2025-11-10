@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.8', '3.9', '3.10', '3.11', 'pypy3.11', '3.12', '3.13', '3.14']
+        python-version: ['3.10', '3.11', 'pypy3.11', '3.12', '3.13', '3.14']
 
     runs-on: ubuntu-latest
 
@@ -23,10 +23,10 @@ jobs:
       PYTHON: ${{ matrix.python-version }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - name: set up python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
         allow-prereleases: true
@@ -39,7 +39,7 @@ jobs:
 
     - run: coverage xml
 
-    - uses: codecov/codecov-action@v3
+    - uses: codecov/codecov-action@v5
       with:
         file: ./coverage.xml
         env_vars: PYTHON
@@ -48,9 +48,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v6
       with:
         python-version: '3.10'
 
@@ -68,17 +68,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: set up python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.10'
 
       - run: pip install -U twine build
 
       - name: check GITHUB_REF matches package version
-        uses: samuelcolvin/check-python-version@v4
+        uses: samuelcolvin/check-python-version@v5
         with:
           version_file_path: annotated_types/__init__.py
 

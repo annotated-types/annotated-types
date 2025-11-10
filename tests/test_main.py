@@ -1,12 +1,7 @@
 import math
-import sys
+from collections.abc import Callable, Iterable, Iterator
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, Iterator, Type, Union
-
-if sys.version_info < (3, 9):
-    from typing_extensions import Annotated, get_args, get_origin
-else:
-    from typing import Annotated, get_args, get_origin
+from typing import TYPE_CHECKING, Annotated, Any, Union, get_args, get_origin
 
 import pytest
 
@@ -85,7 +80,7 @@ def check_quantity(constraint: Constraint, val: Any) -> bool:
 Validator = Callable[[Constraint, Any], bool]
 
 
-VALIDATORS: Dict[Type[Constraint], Validator] = {
+VALIDATORS: dict[type[Constraint], Validator] = {
     annotated_types.Gt: check_gt,
     annotated_types.Lt: check_lt,
     annotated_types.Ge: check_ge,
