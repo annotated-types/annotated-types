@@ -17,9 +17,6 @@ from typing import (
     runtime_checkable,
 )
 
-KW_ONLY = {"kw_only": True}
-SLOTS = {"slots": True}
-
 
 __all__ = (
     'BaseMetadata',
@@ -100,7 +97,7 @@ class BaseMetadata:
     __slots__ = ()
 
 
-@dataclass(frozen=True, **SLOTS)
+@dataclass(frozen=True, slots=True)
 class Gt(BaseMetadata):
     """Gt(gt=x) implies that the value must be greater than x.
 
@@ -111,7 +108,7 @@ class Gt(BaseMetadata):
     gt: SupportsGt
 
 
-@dataclass(frozen=True, **SLOTS)
+@dataclass(frozen=True, slots=True)
 class Ge(BaseMetadata):
     """Ge(ge=x) implies that the value must be greater than or equal to x.
 
@@ -122,7 +119,7 @@ class Ge(BaseMetadata):
     ge: SupportsGe
 
 
-@dataclass(frozen=True, **SLOTS)
+@dataclass(frozen=True, slots=True)
 class Lt(BaseMetadata):
     """Lt(lt=x) implies that the value must be less than x.
 
@@ -133,7 +130,7 @@ class Lt(BaseMetadata):
     lt: SupportsLt
 
 
-@dataclass(frozen=True, **SLOTS)
+@dataclass(frozen=True, slots=True)
 class Le(BaseMetadata):
     """Le(le=x) implies that the value must be less than or equal to x.
 
@@ -196,7 +193,7 @@ class GroupedMetadata(Protocol):
             raise NotImplementedError  # more helpful than "None has no attribute..." type errors
 
 
-@dataclass(frozen=True, **KW_ONLY, **SLOTS)
+@dataclass(frozen=True, kw_only=True, slots=True)
 class Interval(GroupedMetadata):
     """Interval can express inclusive or exclusive bounds with a single object.
 
@@ -221,7 +218,7 @@ class Interval(GroupedMetadata):
             yield Le(self.le)
 
 
-@dataclass(frozen=True, **SLOTS)
+@dataclass(frozen=True, slots=True)
 class MultipleOf(BaseMetadata):
     """MultipleOf(multiple_of=x) might be interpreted in two ways:
 
@@ -235,7 +232,7 @@ class MultipleOf(BaseMetadata):
     multiple_of: SupportsDiv | SupportsMod
 
 
-@dataclass(frozen=True, **SLOTS)
+@dataclass(frozen=True, slots=True)
 class MinLen(BaseMetadata):
     """
     MinLen() implies minimum inclusive length,
@@ -245,7 +242,7 @@ class MinLen(BaseMetadata):
     min_length: Annotated[int, Ge(0)]
 
 
-@dataclass(frozen=True, **SLOTS)
+@dataclass(frozen=True, slots=True)
 class MaxLen(BaseMetadata):
     """
     MaxLen() implies maximum inclusive length,
@@ -255,7 +252,7 @@ class MaxLen(BaseMetadata):
     max_length: Annotated[int, Ge(0)]
 
 
-@dataclass(frozen=True, **SLOTS)
+@dataclass(frozen=True, slots=True)
 class Len(GroupedMetadata):
     """
     Len() implies that ``min_length <= len(value) <= max_length``.
@@ -274,7 +271,7 @@ class Len(GroupedMetadata):
             yield MaxLen(self.max_length)
 
 
-@dataclass(frozen=True, **SLOTS)
+@dataclass(frozen=True, slots=True)
 class Timezone(BaseMetadata):
     """Timezone(tz=...) requires a datetime to be aware (or ``tz=None``, naive).
 
@@ -291,7 +288,7 @@ class Timezone(BaseMetadata):
     tz: str | tzinfo | EllipsisType | None
 
 
-@dataclass(frozen=True, **SLOTS)
+@dataclass(frozen=True, slots=True)
 class Unit(BaseMetadata):
     """Indicates that the value is a physical quantity with the specified unit.
 
@@ -314,7 +311,7 @@ class Unit(BaseMetadata):
     unit: str
 
 
-@dataclass(frozen=True, **SLOTS)
+@dataclass(frozen=True, slots=True)
 class Predicate(BaseMetadata):
     """``Predicate(func: Callable)`` implies `func(value)` is truthy for valid values.
 
@@ -405,7 +402,7 @@ try:
     from typing_extensions import Doc  # type: ignore[attr-defined]
 except ImportError:
 
-    @dataclass(frozen=True, **SLOTS)
+    @dataclass(frozen=True, slots=True)
     class Doc:  # type: ignore [no-redef]
         """ "
         The return value of doc(), mainly to be used by tools that want to extract the
