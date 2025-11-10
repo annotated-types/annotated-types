@@ -17,7 +17,6 @@ from typing import (
     runtime_checkable,
 )
 
-
 __all__ = (
     'BaseMetadata',
     'GroupedMetadata',
