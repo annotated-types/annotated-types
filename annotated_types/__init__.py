@@ -263,7 +263,7 @@ class Len(GroupedMetadata):
     max_length: Annotated[int, Ge(0)] | None = None
 
     def __iter__(self) -> Iterator[BaseMetadata]:
-        """Unpack a Len into zone or more single-bounds."""
+        """Unpack a Len into zero or more single-bounds."""
         if self.min_length > 0:
             yield MinLen(self.min_length)
         if self.max_length is not None:
