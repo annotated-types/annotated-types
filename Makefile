@@ -3,36 +3,32 @@ paths = annotated_types tests
 
 .PHONY: install
 install:
-	pip install -r requirements/all.txt
-	pre-commit install
-
-.PHONY: generate-dependencies
-generate-dependencies:
-	pip-compile --output-file=requirements/all.txt --resolver=backtracking requirements/all.in
+	uv sync
+	uv run pre-commit install
 
 .PHONY: format
 format:
-	isort $(paths)
-	black $(paths)
+	uv run isort $(paths)
+	uv run black $(paths)
 
 .PHONY: lint
 lint:
-	flake8 $(paths)
-	isort $(paths) --check-only --df
-	black $(paths) --check
+	uv run flake8 $(paths)
+	uv run isort $(paths) --check-only --df
+	uv run black $(paths) --check
 
 .PHONY: test
 test:
-	coverage run -m pytest
+	uv run coverage run -m pytest
 
 .PHONY: testcov
 testcov: test
-	@coverage report --show-missing
-	@coverage html
+	@uv run coverage report --show-missing
+	@uv run coverage html
 
 .PHONY: mypy
 mypy:
-	mypy annotated_types tests
+	uv run mypy annotated_types tests
 
 .PHONY: all
 all: lint mypy testcov

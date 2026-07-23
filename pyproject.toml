@@ -37,6 +37,19 @@ Homepage = "https://github.com/annotated-types/annotated-types"
 Source = "https://github.com/annotated-types/annotated-types"
 Changelog = "https://github.com/annotated-types/annotated-types/releases"
 
+[dependency-groups]
+dev = [
+    "black",
+    "flake8",
+    "flake8-pyproject",
+    "isort[colors]",
+    "mypy",
+    "pre-commit",
+    "coverage",
+    "pytest",
+    "pytest-sugar",
+]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
@@ -51,7 +64,7 @@ filterwarnings = "error"
 [tool.flake8]
 max_line_length = 120
 max_complexity = 10
-ignore = ["E203", "W503"]
+ignore = ["E203", "E704", "W503"]
 
 [tool.coverage.run]
 source = ["annotated_types"]
