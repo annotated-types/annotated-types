@@ -25,19 +25,17 @@ jobs:
     steps:
     - uses: actions/checkout@v5
 
-    - name: set up python
-      uses: actions/setup-python@v6
+    - name: install uv
+      uses: astral-sh/setup-uv@v6
       with:
         python-version: ${{ matrix.python-version }}
-        allow-prereleases: true
+        enable-cache: true
 
-    - run: pip install -r requirements/all.txt
-
-    - run: pip install .
+    - run: uv sync
 
     - run: make test
 
-    - run: coverage xml
+    - run: uv run coverage xml
 
     - uses: codecov/codecov-action@v5
       with:
@@ -50,11 +48,13 @@ jobs:
     steps:
     - uses: actions/checkout@v5
 
-    - uses: actions/setup-python@v6
+    - name: install uv
+      uses: astral-sh/setup-uv@v6
       with:
         python-version: '3.10'
+        enable-cache: true
 
-    - run: pip install -r requirements/all.txt
+    - run: uv sync
 
     - uses: pre-commit/action@v3.0.1
       with:

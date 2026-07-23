@@ -13,7 +13,6 @@ from typing import (
     SupportsFloat,
     SupportsIndex,
     TypeVar,
-    Union,
     runtime_checkable,
 )
 
@@ -57,33 +56,27 @@ T = TypeVar('T')
 
 
 class SupportsGt(Protocol):
-    def __gt__(self: T, __other: T) -> bool:
-        ...
+    def __gt__(self: T, __other: T) -> bool: ...
 
 
 class SupportsGe(Protocol):
-    def __ge__(self: T, __other: T) -> bool:
-        ...
+    def __ge__(self: T, __other: T) -> bool: ...
 
 
 class SupportsLt(Protocol):
-    def __lt__(self: T, __other: T) -> bool:
-        ...
+    def __lt__(self: T, __other: T) -> bool: ...
 
 
 class SupportsLe(Protocol):
-    def __le__(self: T, __other: T) -> bool:
-        ...
+    def __le__(self: T, __other: T) -> bool: ...
 
 
 class SupportsMod(Protocol):
-    def __mod__(self: T, __other: T) -> T:
-        ...
+    def __mod__(self: T, __other: T) -> T: ...
 
 
 class SupportsDiv(Protocol):
-    def __div__(self: T, __other: T) -> T:
-        ...
+    def __div__(self: T, __other: T) -> T: ...
 
 
 class BaseMetadata:
@@ -170,14 +163,13 @@ class GroupedMetadata(Protocol):
 
     - `Annotated[int, Field(...)]` (parser must unpack Field)
     - `Annotated[int, *Field(...)]` (PEP-646)
-    """  # noqa: trailing-whitespace
+    """
 
     @property
     def __is_annotated_types_grouped_metadata__(self) -> Literal[True]:
         return True
 
-    def __iter__(self) -> Iterator[object]:
-        ...
+    def __iter__(self) -> Iterator[object]: ...
 
     if not TYPE_CHECKING:
         __slots__ = ()  # allow subclasses to use slots
@@ -335,15 +327,16 @@ class Predicate(BaseMetadata):
     func: Callable[[Any], bool]
 
     def __repr__(self) -> str:
-        if getattr(self.func, "__name__", "<lambda>") == "<lambda>":
-            return f"{self.__class__.__name__}({self.func!r})"
+        name = getattr(self.func, '__name__', '<lambda>')
+        if name == '<lambda>':
+            return f'{self.__class__.__name__}({self.func!r})'
         if isinstance(self.func, (types.MethodType, types.BuiltinMethodType)) and (
-            namespace := getattr(self.func.__self__, "__name__", None)
+            namespace := getattr(self.func.__self__, '__name__', None)
         ):
-            return f"{self.__class__.__name__}({namespace}.{self.func.__name__})"
+            return f'{self.__class__.__name__}({namespace}.{name})'
         if isinstance(self.func, type(str.isascii)):  # method descriptor
-            return f"{self.__class__.__name__}({self.func.__qualname__})"
-        return f"{self.__class__.__name__}({self.func.__name__})"
+            return f'{self.__class__.__name__}({self.func.__qualname__})'
+        return f'{self.__class__.__name__}({name})'
 
 
 @dataclass
@@ -354,7 +347,7 @@ class Not:
         return not self.func(__v)
 
 
-_StrType = TypeVar("_StrType", bound=str)
+_StrType = TypeVar('_StrType', bound=str)
 
 LowerCase = Annotated[_StrType, Predicate(str.islower)]
 """
@@ -369,7 +362,7 @@ Return True if the string is an uppercase string, False otherwise.
 A string is uppercase if all cased characters in the string are uppercase and there is at least one cased character in the string.
 """  # noqa: E501
 IsDigit = Annotated[_StrType, Predicate(str.isdigit)]
-IsDigits = IsDigit  # type: ignore  # plural for backwards compatibility, see #63
+IsDigits = IsDigit  # plural for backwards compatibility, see #63
 """
 Return True if the string is a digit string, False otherwise.
 
@@ -382,7 +375,7 @@ Return True if all characters in the string are ASCII, False otherwise.
 ASCII characters have code points in the range U+0000-U+007F. Empty string is ASCII too.
 """
 
-_NumericType = TypeVar('_NumericType', bound=Union[SupportsFloat, SupportsIndex])
+_NumericType = TypeVar('_NumericType', bound=SupportsFloat | SupportsIndex)
 IsFinite = Annotated[_NumericType, Predicate(math.isfinite)]
 """Return True if x is neither an infinity nor a NaN, and False otherwise."""
 IsNotFinite = Annotated[_NumericType, Predicate(Not(math.isfinite))]
@@ -398,7 +391,7 @@ IsNotInfinite = Annotated[_NumericType, Predicate(Not(math.isinf))]
 
 try:
     # PEP 727 – Documentation in Annotated Metadata
-    from typing_extensions import Doc  # type: ignore[attr-defined]
+    from typing_extensions import Doc
 except ImportError:
 
     @dataclass(frozen=True, slots=True)
