@@ -8,14 +8,13 @@ install:
 
 .PHONY: format
 format:
-	uv run isort $(paths)
-	uv run black $(paths)
+	uv run ruff format $(paths)
+	uv run ruff check --fix $(paths)
 
 .PHONY: lint
 lint:
-	uv run flake8 $(paths)
-	uv run isort $(paths) --check-only --df
-	uv run black $(paths) --check
+	uv run ruff format --check $(paths)
+	uv run ruff check $(paths)
 
 .PHONY: test
 test:
@@ -26,12 +25,12 @@ testcov: test
 	@uv run coverage report --show-missing
 	@uv run coverage html
 
-.PHONY: mypy
-mypy:
-	uv run mypy annotated_types tests
+.PHONY: typecheck
+typecheck:
+	uv run ty check annotated_types tests
 
 .PHONY: all
-all: lint mypy testcov
+all: lint typecheck testcov
 
 .PHONY: clean
 clean:
