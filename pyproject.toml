@@ -39,11 +39,8 @@ Changelog = "https://github.com/annotated-types/annotated-types/releases"
 
 [dependency-groups]
 dev = [
-    "black",
-    "flake8",
-    "flake8-pyproject",
-    "isort[colors]",
-    "mypy",
+    "ruff",
+    "ty",
     "pre-commit",
     "coverage",
     "pytest",
@@ -61,11 +58,6 @@ path = "annotated_types/__init__.py"
 testpaths = "tests"
 filterwarnings = "error"
 
-[tool.flake8]
-max_line_length = 120
-max_complexity = 10
-ignore = ["E203", "E704", "W503"]
-
 [tool.coverage.run]
 source = ["annotated_types"]
 branch = true
@@ -80,21 +72,19 @@ exclude_lines = [
     "@overload",
 ]
 
-[tool.black]
-color = true
+[tool.ruff]
 line-length = 120
-target-version = ["py310"]
-skip-string-normalization = true
+target-version = "py310"
 
-[tool.isort]
-line_length = 120
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-combine_as_imports = true
-color_output = true
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "UP", "C90"]
+ignore = ["E203"]
 
-[tool.mypy]
-strict = true
-warn_return_any = false
-show_error_codes = true
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+
+[tool.ruff.format]
+quote-style = "single"
