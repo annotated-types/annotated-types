@@ -57,33 +57,27 @@ T = TypeVar('T')
 
 
 class SupportsGt(Protocol):
-    def __gt__(self: T, __other: T) -> bool:
-        ...
+    def __gt__(self: T, __other: T) -> bool: ...
 
 
 class SupportsGe(Protocol):
-    def __ge__(self: T, __other: T) -> bool:
-        ...
+    def __ge__(self: T, __other: T) -> bool: ...
 
 
 class SupportsLt(Protocol):
-    def __lt__(self: T, __other: T) -> bool:
-        ...
+    def __lt__(self: T, __other: T) -> bool: ...
 
 
 class SupportsLe(Protocol):
-    def __le__(self: T, __other: T) -> bool:
-        ...
+    def __le__(self: T, __other: T) -> bool: ...
 
 
 class SupportsMod(Protocol):
-    def __mod__(self: T, __other: T) -> T:
-        ...
+    def __mod__(self: T, __other: T) -> T: ...
 
 
 class SupportsDiv(Protocol):
-    def __div__(self: T, __other: T) -> T:
-        ...
+    def __div__(self: T, __other: T) -> T: ...
 
 
 class BaseMetadata:
@@ -176,8 +170,7 @@ class GroupedMetadata(Protocol):
     def __is_annotated_types_grouped_metadata__(self) -> Literal[True]:
         return True
 
-    def __iter__(self) -> Iterator[object]:
-        ...
+    def __iter__(self) -> Iterator[object]: ...
 
     if not TYPE_CHECKING:
         __slots__ = ()  # allow subclasses to use slots
@@ -398,7 +391,7 @@ IsNotInfinite = Annotated[_NumericType, Predicate(Not(math.isinf))]
 
 try:
     # PEP 727 – Documentation in Annotated Metadata
-    from typing_extensions import Doc  # type: ignore[attr-defined]
+    from typing_extensions import Doc
 except ImportError:
 
     @dataclass(frozen=True, slots=True)
