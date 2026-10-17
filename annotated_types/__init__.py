@@ -153,15 +153,20 @@ class GroupedMetadata(Protocol):
     For example:
 
     >>> @dataclass
-    >>> class Field(GroupedMetadata):
-    >>>     gt: float | None = None
-    >>>     description: str | None = None
+    ... class Description:
+    ...     text: str
+    >>> @dataclass
+    ... class Field(GroupedMetadata):
+    ...     gt: float | None = None
+    ...     description: str | None = None
     ...
-    >>>     def __iter__(self) -> Iterable[object]:
-    >>>         if self.gt is not None:
-    >>>             yield Gt(self.gt)
-    >>>         if self.description is not None:
-    >>>             yield Description(self.gt)
+    ...     def __iter__(self) -> Iterator[object]:
+    ...         if self.gt is not None:
+    ...             yield Gt(self.gt)
+    ...         if self.description is not None:
+    ...             yield Description(self.description)
+    >>> list(Field(gt=0, description='positive'))
+    [Gt(gt=0), Description(text='positive')]
 
     Also see the implementation of `Interval` below for an example.
 
