@@ -220,10 +220,17 @@ Implementers may choose to provide a convenience wrapper that groups multiple pi
 This can help reduce verbosity and cognitive overhead for users.
 For example, an implementer like Pydantic might provide a `Field` or `Meta` type that accepts keyword arguments and transforms these into low-level metadata:
 
+Here, `Description` is a custom metadata type defined by the consuming library.
+
 ```python
+from collections.abc import Iterator
 from dataclasses import dataclass
-from typing import Iterator
-from annotated_types import GroupedMetadata, Ge
+
+from annotated_types import Ge, GroupedMetadata
+
+@dataclass
+class Description:
+    text: str
 
 @dataclass
 class Field(GroupedMetadata):
