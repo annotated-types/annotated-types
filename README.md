@@ -212,7 +212,7 @@ It expects a value that can be statically analyzed, as the main use case is for 
 
 It returns a `DocInfo` class with a single attribute `documentation` containing the value passed to `doc()`.
 
-This is the early adopter's alternative form of the [`typing-doc` proposal](https://github.com/tiangolo/fastapi/blob/typing-doc/typing_doc.md).
+This is the early adopter's alternative form of the [`typing-doc` proposal (PEP 727)](https://peps.python.org/pep-0727/).
 
 ### Integrating downstream types with `GroupedMetadata`
 
