@@ -70,7 +70,7 @@ pyyaml==6.0.1
     # via pre-commit
 termcolor==2.3.0
     # via pytest-sugar
-typing-extensions==4.7.1
+typing-extensions==4.16.0
     # via mypy
 virtualenv==20.24.3
     # via pre-commit
