@@ -136,7 +136,7 @@ def cases() -> Iterable[Case]:
     yield Case(at.IsInfinite[Annotated[float, at.Predicate(lambda x: x > 0)]], [math.inf], [-math.inf, 1.23, math.nan])
 
     # doc
-    yield Case(Annotated[int, at.doc("A number")], [1, 2], [])
+    yield Case(Annotated[int, at.doc('A number')], [1, 2], [])
 
     # custom GroupedMetadata
     class MyCustomGroupedMetadata(at.GroupedMetadata):
