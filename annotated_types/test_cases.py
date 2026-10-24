@@ -32,9 +32,9 @@ def cases() -> Iterable[Case]:
         [date(2000, 1, 1), date(1999, 12, 31)],
     )
     yield Case(
-        Annotated[datetime, at.Gt(Decimal('1.123'))],
-        [Decimal('1.1231'), Decimal('123')],
-        [Decimal('1.123'), Decimal('0')],
+        Annotated[datetime, at.Gt(Decimal("1.123"))],
+        [Decimal("1.1231"), Decimal("123")],
+        [Decimal("1.123"), Decimal("0")],
     )
 
     yield Case(Annotated[int, at.Ge(4)], (4, 5, 6, 1000, 4), (0, -1))
@@ -76,18 +76,18 @@ def cases() -> Iterable[Case]:
 
     # lengths
 
-    yield Case(Annotated[str, at.MinLen(3)], ('123', '1234', 'x' * 10), ('', '1', '12'))
-    yield Case(Annotated[str, at.Len(3)], ('123', '1234', 'x' * 10), ('', '1', '12'))
+    yield Case(Annotated[str, at.MinLen(3)], ("123", "1234", "x" * 10), ("", "1", "12"))
+    yield Case(Annotated[str, at.Len(3)], ("123", "1234", "x" * 10), ("", "1", "12"))
     yield Case(Annotated[list[int], at.MinLen(3)], ([1, 2, 3], [1, 2, 3, 4], [1] * 10), ([], [1], [1, 2]))
     yield Case(Annotated[list[int], at.Len(3)], ([1, 2, 3], [1, 2, 3, 4], [1] * 10), ([], [1], [1, 2]))
 
-    yield Case(Annotated[str, at.MaxLen(4)], ('', '1234'), ('12345', 'x' * 10))
-    yield Case(Annotated[str, at.Len(0, 4)], ('', '1234'), ('12345', 'x' * 10))
-    yield Case(Annotated[list[str], at.MaxLen(4)], ([], ['a', 'bcdef'], ['a', 'b', 'c']), (['a'] * 5, ['b'] * 10))
-    yield Case(Annotated[list[str], at.Len(0, 4)], ([], ['a', 'bcdef'], ['a', 'b', 'c']), (['a'] * 5, ['b'] * 10))
+    yield Case(Annotated[str, at.MaxLen(4)], ("", "1234"), ("12345", "x" * 10))
+    yield Case(Annotated[str, at.Len(0, 4)], ("", "1234"), ("12345", "x" * 10))
+    yield Case(Annotated[list[str], at.MaxLen(4)], ([], ["a", "bcdef"], ["a", "b", "c"]), (["a"] * 5, ["b"] * 10))
+    yield Case(Annotated[list[str], at.Len(0, 4)], ([], ["a", "bcdef"], ["a", "b", "c"]), (["a"] * 5, ["b"] * 10))
 
-    yield Case(Annotated[str, at.Len(3, 5)], ('123', '12345'), ('', '1', '12', '123456', 'x' * 10))
-    yield Case(Annotated[str, at.Len(3, 3)], ('123',), ('12', '1234'))
+    yield Case(Annotated[str, at.Len(3, 5)], ("123", "12345"), ("", "1", "12", "123456", "x" * 10))
+    yield Case(Annotated[str, at.Len(3, 3)], ("123",), ("12", "1234"))
 
     yield Case(Annotated[dict[int, int], at.Len(2, 3)], [{1: 1, 2: 2}], [{}, {1: 1}, {1: 1, 2: 2, 3: 3, 4: 4}])
     yield Case(Annotated[set[int], at.Len(2, 3)], ({1, 2}, {1, 2, 3}), (set(), {1}, {1, 2, 3, 4}))
@@ -107,21 +107,21 @@ def cases() -> Iterable[Case]:
         [datetime(2000, 1, 1), datetime(2000, 1, 1, tzinfo=timezone(timedelta(hours=6)))],
     )
     yield Case(
-        Annotated[datetime, at.Timezone('Europe/London')],
-        [datetime(2000, 1, 1, tzinfo=timezone(timedelta(0), name='Europe/London'))],
+        Annotated[datetime, at.Timezone("Europe/London")],
+        [datetime(2000, 1, 1, tzinfo=timezone(timedelta(0), name="Europe/London"))],
         [datetime(2000, 1, 1), datetime(2000, 1, 1, tzinfo=timezone(timedelta(hours=6)))],
     )
 
     # Quantity
 
-    yield Case(Annotated[float, at.Unit(unit='m')], (5, 4.2), ('5m', '4.2m'))
+    yield Case(Annotated[float, at.Unit(unit="m")], (5, 4.2), ("5m", "4.2m"))
 
     # predicate types
 
-    yield Case(at.LowerCase[str], ['abc', 'foobar'], ['', 'A', 'Boom'])
-    yield Case(at.UpperCase[str], ['ABC', 'DEFO'], ['', 'a', 'abc', 'AbC'])
-    yield Case(at.IsDigit[str], ['123'], ['', 'ab', 'a1b2'])
-    yield Case(at.IsAscii[str], ['123', 'foo bar'], ['£100', '😊', 'whatever 👀'])
+    yield Case(at.LowerCase[str], ["abc", "foobar"], ["", "A", "Boom"])
+    yield Case(at.UpperCase[str], ["ABC", "DEFO"], ["", "a", "abc", "AbC"])
+    yield Case(at.IsDigit[str], ["123"], ["", "ab", "a1b2"])
+    yield Case(at.IsAscii[str], ["123", "foo bar"], ["£100", "😊", "whatever 👀"])
 
     yield Case(Annotated[int, at.Predicate(lambda x: x % 2 == 0)], [0, 2, 4], [1, 3, 5])
 
