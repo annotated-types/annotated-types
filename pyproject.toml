@@ -88,3 +88,4 @@ combine-as-imports = true
 
 [tool.ruff.format]
 quote-style = "single"
+exclude = ["*.md"]
