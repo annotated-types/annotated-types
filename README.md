@@ -212,7 +212,9 @@ It expects a value that can be statically analyzed, as the main use case is for 
 
 It returns a `DocInfo` class with a single attribute `documentation` containing the value passed to `doc()`.
 
-This is the early adopter's alternative form of the [`typing-doc` proposal (PEP 727)](https://peps.python.org/pep-0727/).
+`doc()` was the early adopter's form of the [`typing-doc` proposal (PEP 727)](https://peps.python.org/pep-0727/). PEP 727 was withdrawn, and `Doc` is now maintained in the [`annotated-doc`](https://github.com/fastapi/annotated-doc) package.
+
+We keep `doc()` and `DocInfo` for backward compatibility. For new code, use `annotated-doc`.
 
 ### Integrating downstream types with `GroupedMetadata`
 
