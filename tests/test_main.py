@@ -115,25 +115,25 @@ def is_valid(tp: type, value: Any) -> bool:
     return True
 
 
-def extract_valid_testcases(case: Case) -> 'Iterable[ParameterSet]':
+def extract_valid_testcases(case: Case) -> "Iterable[ParameterSet]":
     for example in case.valid_cases:
-        yield pytest.param(case.annotation, example, id=f'{case.annotation} is valid for {repr(example)}')
+        yield pytest.param(case.annotation, example, id=f"{case.annotation} is valid for {repr(example)}")
 
 
-def extract_invalid_testcases(case: Case) -> 'Iterable[ParameterSet]':
+def extract_invalid_testcases(case: Case) -> "Iterable[ParameterSet]":
     for example in case.invalid_cases:
-        yield pytest.param(case.annotation, example, id=f'{case.annotation} is invalid for {repr(example)}')
+        yield pytest.param(case.annotation, example, id=f"{case.annotation} is invalid for {repr(example)}")
 
 
 @pytest.mark.parametrize(
-    'annotation, example', [testcase for case in cases() for testcase in extract_valid_testcases(case)]
+    "annotation, example", [testcase for case in cases() for testcase in extract_valid_testcases(case)]
 )
 def test_valid_cases(annotation: type, example: Any) -> None:
     assert is_valid(annotation, example) is True
 
 
 @pytest.mark.parametrize(
-    'annotation, example', [testcase for case in cases() for testcase in extract_invalid_testcases(case)]
+    "annotation, example", [testcase for case in cases() for testcase in extract_invalid_testcases(case)]
 )
 def test_invalid_cases(annotation: type, example: Any) -> None:
     assert is_valid(annotation, example) is False
@@ -144,13 +144,13 @@ def a_predicate_fn(x: object) -> bool:
 
 
 @pytest.mark.parametrize(
-    'pred, repr_',
+    "pred, repr_",
     [
-        (annotated_types.Predicate(func=a_predicate_fn), ['Predicate(a_predicate_fn)']),
-        (annotated_types.Predicate(func=str.isascii), ['Predicate(str.isascii)']),
-        (annotated_types.Predicate(func=math.isfinite), ['Predicate(math.isfinite)', 'Predicate(isfinite)']),
-        (annotated_types.Predicate(func=bool), ['Predicate(bool)']),
-        (annotated_types.Predicate(func := lambda _: True), [f'Predicate({func!r})']),
+        (annotated_types.Predicate(func=a_predicate_fn), ["Predicate(a_predicate_fn)"]),
+        (annotated_types.Predicate(func=str.isascii), ["Predicate(str.isascii)"]),
+        (annotated_types.Predicate(func=math.isfinite), ["Predicate(math.isfinite)", "Predicate(isfinite)"]),
+        (annotated_types.Predicate(func=bool), ["Predicate(bool)"]),
+        (annotated_types.Predicate(func := lambda _: True), [f"Predicate({func!r})"]),
     ],
 )
 def test_predicate_repr(pred: annotated_types.Predicate, repr_: str) -> None:

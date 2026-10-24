@@ -332,16 +332,16 @@ class Predicate(BaseMetadata):
     func: Callable[[Any], bool]
 
     def __repr__(self) -> str:
-        name = getattr(self.func, '__name__', '<lambda>')
-        if name == '<lambda>':
-            return f'{self.__class__.__name__}({self.func!r})'
+        name = getattr(self.func, "__name__", "<lambda>")
+        if name == "<lambda>":
+            return f"{self.__class__.__name__}({self.func!r})"
         if isinstance(self.func, (types.MethodType, types.BuiltinMethodType)) and (
-            namespace := getattr(self.func.__self__, '__name__', None)
+            namespace := getattr(self.func.__self__, "__name__", None)
         ):
-            return f'{self.__class__.__name__}({namespace}.{name})'
+            return f"{self.__class__.__name__}({namespace}.{name})"
         if isinstance(self.func, type(str.isascii)):  # method descriptor
-            return f'{self.__class__.__name__}({self.func.__qualname__})'
-        return f'{self.__class__.__name__}({name})'
+            return f"{self.__class__.__name__}({self.func.__qualname__})"
+        return f"{self.__class__.__name__}({name})"
 
 
 @dataclass
@@ -352,7 +352,7 @@ class Not:
         return not self.func(__v)
 
 
-_StrType = TypeVar('_StrType', bound=str)
+_StrType = TypeVar("_StrType", bound=str)
 
 LowerCase = Annotated[_StrType, Predicate(str.islower)]
 """
