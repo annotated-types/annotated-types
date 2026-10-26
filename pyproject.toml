@@ -41,7 +41,7 @@ Changelog = "https://github.com/annotated-types/annotated-types/releases"
 dev = [
     "ruff",
     "ty",
-    "pre-commit",
+    "prek",
     "coverage",
     "pytest",
     "pytest-sugar",

@@ -56,9 +56,7 @@ jobs:
 
     - run: uv sync
 
-    - uses: pre-commit/action@v3.0.1
-      with:
-        extra_args: --all-files --verbose
+    - run: uv run prek run --all-files --show-diff-on-failure
 
   deploy:
     needs:
