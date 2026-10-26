@@ -1,6 +1,6 @@
 import math
 from collections.abc import Iterable, Iterator
-from datetime import date, datetime, timedelta, timezone
+from datetime import UTC, date, datetime, timedelta, timezone
 from decimal import Decimal
 from typing import Annotated, Any, NamedTuple
 
@@ -95,15 +95,11 @@ def cases() -> Iterable[Case]:
 
     # Timezone
 
+    yield Case(Annotated[datetime, at.Timezone(None)], [datetime(2000, 1, 1)], [datetime(2000, 1, 1, tzinfo=UTC)])
+    yield Case(Annotated[datetime, at.Timezone(...)], [datetime(2000, 1, 1, tzinfo=UTC)], [datetime(2000, 1, 1)])
     yield Case(
-        Annotated[datetime, at.Timezone(None)], [datetime(2000, 1, 1)], [datetime(2000, 1, 1, tzinfo=timezone.utc)]
-    )
-    yield Case(
-        Annotated[datetime, at.Timezone(...)], [datetime(2000, 1, 1, tzinfo=timezone.utc)], [datetime(2000, 1, 1)]
-    )
-    yield Case(
-        Annotated[datetime, at.Timezone(timezone.utc)],
-        [datetime(2000, 1, 1, tzinfo=timezone.utc)],
+        Annotated[datetime, at.Timezone(UTC)],
+        [datetime(2000, 1, 1, tzinfo=UTC)],
         [datetime(2000, 1, 1), datetime(2000, 1, 1, tzinfo=timezone(timedelta(hours=6)))],
     )
     yield Case(
