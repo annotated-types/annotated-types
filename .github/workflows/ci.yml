@@ -56,7 +56,7 @@ jobs:
 
     - run: uv sync
 
-    - run: uv run prek run --all-files --show-diff-on-failure
+    - uses: j178/prek-action@v3.1.0
 
   deploy:
     needs:
