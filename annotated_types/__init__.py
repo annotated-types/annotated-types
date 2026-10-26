@@ -10,6 +10,7 @@ from typing import (
     Any,
     Literal,
     Protocol,
+    Self,
     SupportsFloat,
     SupportsIndex,
     TypeVar,
@@ -50,33 +51,28 @@ __version__ = "0.8.0"
 T = TypeVar("T")
 
 
-# arguments that start with __ are considered
-# positional only
-# see https://peps.python.org/pep-0484/#positional-only-arguments
-
-
 class SupportsGt(Protocol):
-    def __gt__(self: T, __other: T) -> bool: ...
+    def __gt__(self, other: Self, /) -> bool: ...
 
 
 class SupportsGe(Protocol):
-    def __ge__(self: T, __other: T) -> bool: ...
+    def __ge__(self, other: Self, /) -> bool: ...
 
 
 class SupportsLt(Protocol):
-    def __lt__(self: T, __other: T) -> bool: ...
+    def __lt__(self, other: Self, /) -> bool: ...
 
 
 class SupportsLe(Protocol):
-    def __le__(self: T, __other: T) -> bool: ...
+    def __le__(self, other: Self, /) -> bool: ...
 
 
 class SupportsMod(Protocol):
-    def __mod__(self: T, __other: T) -> T: ...
+    def __mod__(self: T, other: T, /) -> T: ...
 
 
 class SupportsDiv(Protocol):
-    def __div__(self: T, __other: T) -> T: ...
+    def __div__(self: T, other: T, /) -> T: ...
 
 
 class BaseMetadata:
@@ -348,8 +344,8 @@ class Predicate(BaseMetadata):
 class Not:
     func: Callable[[Any], bool]
 
-    def __call__(self, __v: Any) -> bool:
-        return not self.func(__v)
+    def __call__(self, v: Any, /) -> bool:
+        return not self.func(v)
 
 
 _StrType = TypeVar("_StrType", bound=str)
