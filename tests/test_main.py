@@ -1,7 +1,7 @@
 import math
 from collections.abc import Callable, Iterable, Iterator
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Annotated, Any, Union, get_args, get_origin
+from typing import TYPE_CHECKING, Annotated, Any, get_args, get_origin
 
 import pytest
 
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 import annotated_types
 from annotated_types.test_cases import Case, cases
 
-Constraint = Union[annotated_types.BaseMetadata, slice]
+Constraint = annotated_types.BaseMetadata | slice
 
 
 def check_gt(constraint: Constraint, val: Any) -> bool:
@@ -103,7 +103,7 @@ def get_constraints(tp: type) -> Iterator[Constraint]:
         if isinstance(arg, annotated_types.BaseMetadata):
             yield arg
         elif isinstance(arg, annotated_types.GroupedMetadata):
-            yield from arg  # type: ignore
+            yield from arg
         elif isinstance(arg, slice):
             yield from annotated_types.Len(arg.start or 0, arg.stop)
 
