@@ -17,37 +17,37 @@ from typing import (
 )
 
 __all__ = (
-    'BaseMetadata',
-    'GroupedMetadata',
-    'Gt',
-    'Ge',
-    'Lt',
-    'Le',
-    'Interval',
-    'MultipleOf',
-    'MinLen',
-    'MaxLen',
-    'Len',
-    'Timezone',
-    'Predicate',
-    'LowerCase',
-    'UpperCase',
-    'IsDigits',
-    'IsFinite',
-    'IsNotFinite',
-    'IsNan',
-    'IsNotNan',
-    'IsInfinite',
-    'IsNotInfinite',
-    'doc',
-    'DocInfo',
-    '__version__',
+    "BaseMetadata",
+    "GroupedMetadata",
+    "Gt",
+    "Ge",
+    "Lt",
+    "Le",
+    "Interval",
+    "MultipleOf",
+    "MinLen",
+    "MaxLen",
+    "Len",
+    "Timezone",
+    "Predicate",
+    "LowerCase",
+    "UpperCase",
+    "IsDigits",
+    "IsFinite",
+    "IsNotFinite",
+    "IsNan",
+    "IsNotNan",
+    "IsInfinite",
+    "IsNotInfinite",
+    "doc",
+    "DocInfo",
+    "__version__",
 )
 
-__version__ = '0.8.0'
+__version__ = "0.8.0"
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 # arguments that start with __ are considered
@@ -380,7 +380,7 @@ Return True if all characters in the string are ASCII, False otherwise.
 ASCII characters have code points in the range U+0000-U+007F. Empty string is ASCII too.
 """
 
-_NumericType = TypeVar('_NumericType', bound=SupportsFloat | SupportsIndex)
+_NumericType = TypeVar("_NumericType", bound=SupportsFloat | SupportsIndex)
 IsFinite = Annotated[_NumericType, Predicate(math.isfinite)]
 """Return True if x is neither an infinity nor a NaN, and False otherwise."""
 IsNotFinite = Annotated[_NumericType, Predicate(Not(math.isfinite))]
