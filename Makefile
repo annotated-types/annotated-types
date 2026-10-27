@@ -4,7 +4,7 @@ paths = annotated_types tests
 .PHONY: install
 install:
 	uv sync
-	uv run pre-commit install
+	uv run prek install
 
 .PHONY: format
 format:
