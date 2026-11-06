@@ -204,6 +204,29 @@ and then propagate or discard the resulting
 `TypeError: descriptor 'isdigit' for 'str' objects doesn't apply to a 'int' object`
 exception.  We encourage libraries to document the behaviour they choose.
 
+### Deprecated
+
+To mark a function parameter or a field as deprecated, use `warnings.deprecated`
+(Python 3.13+) or its backport `typing_extensions.deprecated` as `Annotated` metadata:
+
+```python
+from typing import Annotated, get_type_hints
+from typing_extensions import deprecated
+
+
+class Foo:
+    y: Annotated[int, deprecated("Use z instead")]
+
+
+meta = get_type_hints(Foo, include_extras=True)["y"].__metadata__[0]
+print(meta.message)  # Use z instead
+```
+
+Consumers should check for `isinstance(meta, deprecated)` and read `meta.message`
+to emit a warning or mark the field or parameter as deprecated in a schema.
+Attaching this metadata does not itself emit a warning; downstream libraries
+decide how to handle it.
+
 ### Doc
 
 `doc()` can be used to add documentation information in `Annotated`, for function and method parameters, variables, class attributes, return types, and any place where `Annotated` can be used.
